@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="landing.css">
+    <link rel="icon" type="image/png" href="\images\favicon-32x32.png">
+    <title>GaoloFusion</title>
+    
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <img src="\images\logo.png" alt="Logo" class="logo-circle pulse-on-hover">
+            <div class="logo-text">GaoloFusion</div>
+        </div>
+        <button class="signup-btn pulse-on-hover" onclick="handleSignUp()">SignUp</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <img src="\images\logo.png" alt="GaoloFusion" class="main-logo pulse-on-hover">
+
+        <h1 class="welcome-title">Welcome to GaoloFusion</h1>
+        <p class="subtitle">Signin to Taste the Township, Sip the tradition</p>
+
+        <div class="signin-section">
+            <button class="signin-btn pulse-on-hover" onclick="handleSignIn()">
+                SignIn
+                <span class="loading" id="loadingSpinner" style="display: none;"></span>
+            </button>
+            <br>
+            <span  class="small-text">Don't have an account? 
+                <a href="register.html" class="signup-link" onclick="handleSignUp()">SignUp here</a></span>
+        </div>
+
+        <!-- Food Gallery -->
+        <div class="food-section">
+        <div class="yellow-rectangle"></div>
+        <div class="food-gallery">
+        <div class="food-card">
+                <img src="\images\kota1.png" alt="Food 1" class="food-image">
+            </div>
+            <div class="food-card">
+                <img src="\images\pap.jpg" alt="Food 2" class="food-image">
+            </div>
+            <div class="food-card">
+                <img src="\images\ulusu.jpg" alt="Food 3" class="food-image">
+            </div>
+             <div class="food-card">
+                <img src="\images\braai-platter.jpg" alt="Food 3" class="food-image">
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script>
+        // Add interactive animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects to food cards
+            const foodCards = document.querySelectorAll('.food-card');
+            foodCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Add click animations to buttons
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 150);
+                });
+            });
+
+            // Animate elements on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+
+            // Observe all animated elements
+            const animatedElements = document.querySelectorAll('.food-card, .welcome-title, .subtitle');
+            animatedElements.forEach(el => observer.observe(el));
+        });
+
+        // Handle signin with loading animation
+        function handleSignIn() {
+            const button = document.querySelector('.signin-btn');
+            const spinner = document.getElementById('loadingSpinner');
+            
+            button.disabled = true;
+            spinner.style.display = 'inline-block';
+            
+            // Simulate loading
+            setTimeout(() => {
+                button.disabled = false;
+                spinner.style.display = 'none';
+                alert('Signin functionality would be implemented here!');
+            }, 2000);
+        }
+
+        // Handle signup
+        function handleSignUp() {
+            // Add a subtle animation
+            const signupBtn = document.querySelector('.signup-btn');
+            signupBtn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                signupBtn.style.transform = 'scale(1)';
+                alert('Signup functionality would be implemented here!');
+            }, 150);
+        }
+
+        // Add floating animation to main logo
+        function addFloatingAnimation() {
+            const mainLogo = document.querySelector('.main-logo');
+            let direction = 1;
+            
+            setInterval(() => {
+                const currentTransform = mainLogo.style.transform || '';
+                const yOffset = direction * 5;
+                mainLogo.style.transform = `translateY(${yOffset}px)`;
+                direction *= -1;
+            }, 3000);
+        }
+
+        // Initialize floating animation
+        setTimeout(addFloatingAnimation, 2000);
+
+        // Add parallax effect on scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.food-card');
+            
+            parallaxElements.forEach((element, index) => {
+                const speed = 0.5 + (index * 0.1);
+                element.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
