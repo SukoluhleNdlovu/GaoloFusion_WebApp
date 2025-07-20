@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GaoloFusion</title>
+    <link rel="stylesheet" href="\css\menu1.css" />
+    <link rel="icon" type="image/png" href="\images\favicon-32x32.png" />
+    <link
+      rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    </div>
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">
+          <img
+            src="\images\logo.png"
+            alt="Logo"
+            class="logo-circle pulse-on-hover"
+          />
+          <div class="logo-text">GaoloFusion</div>
+        </div>
+        <div class="location-info">
+          <i class="fas fa-map-marker-alt"></i>
+          <div class="location-text">
+            <div style="font-weight: bold">Deliver to:</div>
+            <div id="location-display">
+              <i class="fas fa-spinner fa-spin"></i> Getting location...
+            </div>
+          </div>
+        </div>
+        <div class="user-profile">
+          <span id="user-greeting">Welcome!</span>
+          <div class="user-avatar" id="user-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="categories">
+    <div class="category">
+        <div class="category-icon">
+            <img src="\images\kotas-menu\kota-icon.jpg" alt="Kotas" class="category-image">
+        </div>
+        <div class="category-text">Kotas</div>
+    </div>
+    <div class="category">
+        <div class="category-icon">
+            <img src="\images\dagwood-menu\dag--1.jpg" alt="Dagwood" class="category-image">
+        </div>
+        <div class="category-text">Dagwood</div>
+    </div>
+    <div class="category">
+        <div class="category-icon">
+            <img src="\images\chips\chips_icon.jpg" alt="Chips" class="category-image">
+        </div>
+        <div class="category-text">Chips</div>
+    </div>
+    <div class="category">
+        <div class="category-icon">
+            <img src="\images\drinks\drinks-icon.jpg" alt="Drinks" class="category-image">
+        </div>
+        <div class="category-text">Drinks</div>
+    </div>
+</div>
+</head>
+<body>
+       <div class="food-grid">
+        <!-- 1 -->
+        <div class="food-card"  onclick="goToViewPage(event)">
+            <div class="food-image food1">
+                <img src="images/kotas-menu/_kota.jpg" alt="BBQ Ribs" onerror="this.style.display='none'" />
+                <div class="rating">⭐ 4.2</div>
+            </div>
+            <div class="food-info">
+                <div class="food-details">
+                    <div class="food-title">Solo Kota - chips, russian, egg, atchaar, polony, cheese, lettuce, cucumber, ham, cheese sauce, vienna</div>
+                    <div class="price-section">
+                        <div class="food-price">R 26.00</div>
+                          <div class="quantity-controls">
+                    <button class="quantity-btn" onclick="changeQuantity(this, -1); event.stopPropagation();">−</button>
+                    <span class="quantity-display">0</span>
+                    <button class="quantity-btn" onclick="changeQuantity(this, 1); event.stopPropagation();">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2 -->
+        <div class="food-card">
+            <div class="food-image food2">
+                <img src="images/kotas-menu/kota-1.jpg" alt="Fillet" onerror="this.style.display='none'" />
+                <div class="rating">⭐ 4.5</div>
+            </div>
+            <div class="food-info">
+                <div class="food-details">
+                    <div class="food-title">Tazz - toasted bread, chips, 2x russian, patty, atchaar, polony, chicken, egg, lettuce, x2 cheese, burger</div>
+                    <div class="price-section">
+                        <div class="food-price">R 50.00</div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="changeQuantity(this, -1)">−</button>
+                            <span class="quantity-display">0</span>
+                            <button class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3 -->
+        <div class="food-card">
+            <div class="food-image food3">
+                <img src="images/kotas-menu/kota-2.jpg" alt="6 Nuggets" onerror="this.style.display='none'" />
+                <div class="rating">⭐ 4.1</div>
+            </div>
+            <div class="food-info">
+                <div class="food-details">
+                    <div class="food-title">G Wagon- chips, russian, egg, atchaar, polony, x2  vienna, chicken patty, cucumber, lettuce, beef patty, cheese</div>
+                    <div class="price-section">
+                        <div class="food-price">R 45.00</div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="changeQuantity(this, -1)">−</button>
+                            <span class="quantity-display">0</span>
+                            <button class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4 -->
+        <div class="food-card">
+            <div class="food-image food4">
+                <img src="images/kotas-menu/kota-3.jpg" alt="All day combo" onerror="this.style.display='none'" />
+                <div class="rating">⭐ 4.7</div>
+            </div>
+            <div class="food-info">
+                <div class="food-details">
+                    <div class="food-title">One Series- chips, russian, egg, atchaar, polony, drumstick, sausage, cheese, ham, cucumber, bacon, vienna</div>
+                    <div class="price-section">
+                        <div class="food-price">R 48.00</div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="changeQuantity(this, -1)">−</button>
+                            <span class="quantity-display">0</span>
+                            <button class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5 -->
+        <div class="food-card">
+            <div class="food-image food5">
+                <img src="images/kotas-menu/kota-4.jpg" alt="300g Chicken" onerror="this.style.display='none'" />
+                <div class="rating">⭐ 4.3</div>
+            </div>
+            <div class="food-info">
+                <div class="food-details">
+                    <div class="food-title">After School- chips, russian, polony, cheese, egg, patty, bacon</div>
+                    <div class="price-section">
+                        <div class="food-price">R 35.00</div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="changeQuantity(this, -1)">−</button>
+                            <span class="quantity-display">0</span>
+                            <button class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6 -->
+        <div class="food-card">
+            <div class="food-image food6">
+                <img src="images/kotas-menu/kota-5.jpg" alt="Chicken Skol" onerror="this.style.display='none'" />
+                <div class="rating">⭐ 4.4</div>
+            </div>
+            <div class="food-info">
+                <div class="food-details">
+                    <div class="food-title">Shanda pha- chips, russian, cheese, lettuce, egg, cucumber</div>
+                    <div class="price-section">
+                        <div class="food-price">R 24.00</div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="changeQuantity(this, -1)">−</button>
+                            <span class="quantity-display">0</span>
+                            <button class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="food-card">
+            <div class="food-image food7">
+                <img src="images/kotas-menu/kota-6.jpg" alt="Chicken Wings" onerror="this.style.display='none'" />
+                <div class="rating">⭐ 4.6</div>
+            </div>
+            <div class="food-info">
+                <div class="food-details">
+                    <div class="food-title">Super Star- extra large chips, russian, egg, atchaar, polony, vienna, chicken patty, cucumber, lettuce, ham, bacon, cheese</div>
+                    <div class="price-section">
+                        <div class="food-price">R 80.00</div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="changeQuantity(this, -1)">−</button>
+                            <span class="quantity-display">0</span>
+                            <button class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 7 -->
+        <div class="food-card">
+            <div class="food-image food8">
+                <img src="images/kotas-menu/kota-7.jpg" alt="Chicken Wings" onerror="this.style.display='none'" />
+                <div class="rating">⭐ 4.6</div>
+            </div>
+            <div class="food-info">
+                <div class="food-details">
+                    <div class="food-title">Bonus Bhoza- chhips, cheese, polony, atchaar, rib burger, patty, egg, bacon, russian</div>
+                    <div class="price-section">
+                        <div class="food-price">R 56.00</div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="changeQuantity(this, -1)">−</button>
+                            <span class="quantity-display">0</span>
+                            <button class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8 -->
+        <div class="food-card">
+            <div class="food-image food9">
+                <img src="images/kotas-menu/kota-8.jpg" alt="Kota 8" onerror="this.style.display='none'" />
+                <div class="rating">⭐ 4.5</div>
+            </div>
+            <div class="food-info">
+                <div class="food-details">
+                    <div class="food-title">Mthakathi- chips, atchaar, polony, bacon, egg, x2 cheese,russian </div>
+                    <div class="price-section">
+                        <div class="food-price">R 35.00</div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="changeQuantity(this, -1)">−</button>
+                            <span class="quantity-display">0</span>
+                            <button class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 9 -->
+        <div class="food-card">
+            <div class="food-image food10">
+                <img src="images/kotas-menu/kota-9.jpg" alt="Kota 8" onerror="this.style.display='none'" />
+                <div class="rating">⭐ 4.7</div>
+            </div>
+            <div class="food-info">
+                <div class="food-details">
+                    <div class="food-title">Phusha- chips, polony, atchaar, lettuce, russian, cheese, patty</div>
+                    <div class="price-section">
+                        <div class="food-price">R 45.00</div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="changeQuantity(this, -1)">−</button>
+                            <span class="quantity-display">0</span>
+                            <button class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 10 -->
+        <div class="food-card">
+            <div class="food-image food11">
+                <img src="images/kotas-menu/kota-10.jpg" alt="Kota 9" onerror="this.style.display='none'" />
+                <div class="rating">⭐ 4.8</div>
+            </div>
+            <div class="food-info">
+                <div class="food-details">
+                    <div class="food-title">Jika Joe- chips, polony, cheese, beef patty, russian, lettuce, pickle, egg, ham, x4 wings</div>
+                    <div class="price-section">
+                        <div class="food-price">R 52.00</div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="changeQuantity(this, -1)">−</button>
+                            <span class="quantity-display">0</span>
+                            <button class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 11 -->
+        <div class="food-card">
+            <div class="food-image food12">
+                <img src="images/kotas-menu/kota-11.jpg" alt="Kota 10" onerror="this.style.display='none'" />
+                <div class="rating">⭐ 4.9</div>
+            </div>
+            <div class="food-info">
+                <div class="food-details">
+                    <div class="food-title">Level Up- chips, lettuce, polony, egg, rib patty, russian, vienna, ham, atchaar, cucumber, x2 cheese,x2 bacon</div>
+                    <div class="price-section">
+                        <div class="food-price">R 75.00</div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="changeQuantity(this, -1)">−</button>
+                            <span class="quantity-display">0</span>
+                            <button class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+     <!-- 12 -->
+<div class="food-card">
+    <div class="food-image food12">
+        <img src="images/kotas-menu/kota-12.jpg" alt="Beef Burger" onerror="this.style.display='none'" />
+        <div class="rating">⭐ 4.5</div>
+    </div>
+    <div class="food-info">
+        <div class="food-details">
+            <div class="food-title">Woza woza- chips, russian, egg, atchaar, polony, vienna, chicken patty, cucumber, lettuce, ham, bacon, x2 cheese, burger, cheese sauce, x4 wings</div>
+            <div class="price-section">
+                <div class="food-price">R 85.00</div>
+                <div class="quantity-controls">
+                    <button class="quantity-btn" onclick="changeQuantity(this, -1)">−</button>
+                    <span class="quantity-display">0</span>
+                    <button class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- New Item 2 -->
+<div class="food-card">
+    <div class="food-image food13">
+        <img src="images/kotas-menu/kota-13.jpg" alt="Veggie Wrap" onerror="this.style.display='none'" />
+        <div class="rating">⭐ 4.3</div>
+    </div>
+    <div class="food-info">
+        <div class="food-details">
+            <div class="food-title">Last number- extra large chips, x2 russian, egg, atchaar, polony, x2 vienna, chicken patty, cucumber, lettuce, ham, bacon,x3 cheese, burger</div>
+            <div class="price-section">
+                <div class="food-price">R 82.00</div>
+                <div class="quantity-controls">
+                    <button class="quantity-btn" onclick="changeQuantity(this, -1)">−</button>
+                    <span class="quantity-display">0</span>
+                    <button class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- New Item 3 -->
+<div class="food-card">
+    <div class="food-image food14">
+        <img src="images/kotas-menu/kota-14.jpg" alt="Fish and Chips" onerror="this.style.display='none'" />
+        <div class="rating">⭐ 4.4</div>
+    </div>
+    <div class="food-info">
+        <div class="food-details">
+            <div class="food-title">Triple 3 - get 3 kotas with chips, russian, egg, atchaar, polony, vienna, chicken patty, cucumber, lettuce, ham, bacon, cheese, chicken wings, </div>
+            <div class="price-section">
+                <div class="food-price">R 150.00</div>
+                <div class="quantity-controls">
+                    <button class="quantity-btn" onclick="changeQuantity(this, -1)">−</button>
+                    <span class="quantity-display">0</span>
+                    <button class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+
+    <script>
+        function goToViewPage(event) {
+          window.location.href = "vieworder.html";
+}
+        function changeQuantity(button, change) {
+            const quantityDisplay = button.parentElement.querySelector('.quantity-display');
+            let currentQuantity = parseInt(quantityDisplay.textContent);
+            currentQuantity += change;
+            if (currentQuantity < 0) currentQuantity = 0;
+            quantityDisplay.textContent = currentQuantity;
+        }
+    </script>
+</body>
+</html>

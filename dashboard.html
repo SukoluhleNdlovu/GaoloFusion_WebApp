@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GaoloFusion</title>
+    <link rel="stylesheet" href="\css\dashboard.css" />
+    <link rel="icon" type="image/png" href="\images\favicon-32x32.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div id="error-container" class="error-message">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span id="error-text"></span>
+    </div>
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">
+          <img
+            src="\images\logo.png"
+            alt="Logo"
+            class="logo-circle pulse-on-hover"
+          />
+          <div class="logo-text">GaoloFusion</div>
+        </div>
+        <div class="location-info">
+          <i class="fas fa-map-marker-alt"></i>
+          <div class="location-text">
+            <div style="font-weight: bold">Deliver to:</div>
+            <div id="location-display">
+              <i class="fas fa-spinner fa-spin"></i> Getting location...
+            </div>
+          </div>
+        </div>
+        <div class="user-profile">
+          <span id="user-greeting">Welcome!</span>
+          <div class="user-avatar" id="user-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="hero-section">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1 class="hero-title" id="hero-title">Are you starving?</h1>
+          <p class="hero-subtitle">
+            Within a few clicks, find your meals that are near you
+          </p>
+          <button class="cta-button" onclick="scrollToRestaurants()">
+            <i class="fas fa-utensils"></i> Select a Menu
+          </button>
+        </div>
+        <img
+          src="\images\braai-platter.jpg"
+          alt="Delicious Food"
+          class="hero-image"
+        />
+      </div>
+    </section>
+
+    <section class="restaurants-section" id="restaurants-section">
+      <div class="restaurants-grid">
+        <div
+          class="restaurant-card"
+          onclick="selectRestaurant('zenzeles-kitchen')"
+        >
+          <img
+            src="\images\kota2.jpg"
+            alt="Zenzele's Kitchen"
+            class="restaurant-image"
+          />
+          <div class="restaurant-info">
+            <div class="restaurant-badge">Soul Food</div>
+            <h3 class="restaurant-name">Zenzele's Kitchen</h3>
+            <p class="restaurant-description">
+              Taste the mix of kasi soul food mixed with flavour.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="restaurant-card"
+          onclick="selectRestaurant('grilled-by-joe')"
+        >
+          <img
+            src="\images\platter1.jpg"
+            alt="Grilled by Joe"
+            class="restaurant-image"
+          />
+          <div class="restaurant-info">
+            <div class="restaurant-badge">Grilled</div>
+            <h3 class="restaurant-name">Grilled by Joe</h3>
+            <p class="restaurant-description">
+              Welcome to the world of the african taste of modern dishes.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="restaurant-card"
+          onclick="selectRestaurant('emasofoni-pub')"
+        >
+          <img
+            src="\images\ulusu and domobolo.jpg"
+            alt="Emasofoni Pub"
+            class="restaurant-image"
+          />
+          <div class="restaurant-info">
+            <div class="restaurant-badge">Traditional</div>
+            <h3 class="restaurant-name">Emasofoni Pub</h3>
+            <p class="restaurant-description">
+              Come taste the difference between ikasi lam and yours.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="restaurant-card"
+          onclick="selectRestaurant('kwamamkhize-culture')"
+        >
+          <img
+            src="\images\inhloko2.jpg"
+            alt="KwaMamkhize Culture"
+            class="restaurant-image"
+          />
+          <div class="restaurant-info">
+            <div class="restaurant-badge">Cultural</div>
+            <h3 class="restaurant-name">KwaMamkhize Culture</h3>
+            <p class="restaurant-description">
+              African soul food cooked with love and passion.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="restaurant-card"
+          onclick="selectRestaurant('mam-betty-chesanyama')"
+        >
+          <img
+            src="\images\amanqina.jpg"
+            alt="Mam Betty ChesaNyama"
+            class="restaurant-image"
+          />
+          <div class="restaurant-info">
+            <div class="restaurant-badge">Braai</div>
+            <h3 class="restaurant-name">Mam Betty ChesaNyama</h3>
+            <p class="restaurant-description">
+              Not just your regular chesa'nyama get a taste of the aroma.
+            </p>
+          </div>
+        </div>
+
+        <div class="restaurant-card" onclick="selectRestaurant('bbq-brothers')">
+          <img
+            src="\images\bbq.jpg"
+            alt="The BBQ Brothers"
+            class="restaurant-image"
+          />
+          <div class="restaurant-info">
+            <div class="restaurant-badge">BBQ</div>
+            <h3 class="restaurant-name">The BBQ Brothers</h3>
+            <p class="restaurant-description">
+              Get your next meal with us and experience the ultimate BBQ.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Firebase SDK -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
+
+    <script>
+      // Firebase Configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyAO1-Cbk_KyssmOZ5t9YZPc-jmv3BS4YTE",
+        authDomain: "gaolofusion-webapp-c94db.firebaseapp.com",
+        projectId: "gaolofusion-webapp-c94db",
+        storageBucket: "gaolofusion-webapp-c94db.firebasestorage.app",
+        messagingSenderId: "962119071623",
+        appId: "1:962119071623:web:6c942e0be7b59ca2cb8522",
+        measurementId: "G-DPQNDCPBNK",}
+
+      // Initialize Firebase
+      let app, auth;
+      try {
+        app = firebase.initializeApp(firebaseConfig);
+        auth = firebase.auth();
+      } catch (error) {
+        console.log("Firebase not configured - using demo mode");
+        // Demo mode for testing
+        setTimeout(() => {
+          updateUserInterface({ fullname: "Joe", email: "joe@example.com" });
+        }, 1000);
+      }
+
+      // Global variables
+      let currentUser = null;
+      let currentLocation = null;
+
+      // Error handling function
+      function showError(message) {
+        const errorContainer = document.getElementById("error-container");
+        const errorText = document.getElementById("error-text");
+        errorText.textContent = message;
+        errorContainer.style.display = "block";
+
+        // Hide error after 5 seconds
+        setTimeout(() => {
+          errorContainer.style.display = "none";
+        }, 5000);
+      }
+
+      // Get user's current location
+      function getCurrentLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              currentLocation = { latitude, longitude };
+
+              // Reverse geocoding to get address
+              reverseGeocode(latitude, longitude);
+            },
+            (error) => {
+              console.error("Geolocation error:", error);
+              let errorMessage = "Unable to get location";
+              switch (error.code) {
+                case error.PERMISSION_DENIED:
+                  errorMessage = "Location access denied";
+                  break;
+                case error.POSITION_UNAVAILABLE:
+                  errorMessage = "Location information unavailable";
+                  break;
+                case error.TIMEOUT:
+                  errorMessage = "Location request timed out";
+                  break;
+              }
+              showError(errorMessage);
+              document.getElementById("location-display").innerHTML =
+                '<i class="fas fa-map-mark"></i> Johannesburg, Gauteng';
+            }
+          );
+        } else {
+          showError("Geolocation not supported");
+          document.getElementById("location-display").innerHTML =
+            '<i class="fas fa-map-marker-alt"></i> Johannesburg, Gauteng';
+        }
+      }    
+
+      // Reverse geocoding (simplified version)
+      function reverseGeocode(lat, lon) {
+        // In a real app, you'd use a proper geocoding service
+        // For demo purposes, we'll use a default location
+        document.getElementById("location-display").innerHTML =
+          '<i class="fas fa-map-marker-alt"></i> 112 Westbury Rd, Johannesburg';
+      }
+
+      // Update user interface with user data
+      function updateUserInterface(user) {
+        currentUser = user;
+
+        if (user && user.displayName) {
+          const firstName = user.displayName.split(" ")[0];
+          document.getElementById(
+            "user-greeting"
+          ).textContent = `Hello, ${firstName}!`;
+          document.getElementById("user-avatar").textContent = firstName
+            .charAt(0)
+            .toUpperCase();
+
+          // Update hero title based on user name
+          const heroTitle = document.getElementById("hero-title");
+          if (firstName.toLowerCase() === "joe") {
+            heroTitle.textContent = "Are you starving Joe?";
+          } else {
+            heroTitle.textContent = `Are you starving ${firstName}?`;
+          }
+        } else {
+          document.getElementById("user-greeting").textContent = "Welcome!";
+          document.getElementById("user-avatar").innerHTML =
+            '<i class="fas fa-user"></i>';
+        }
+      }
+
+      // Firebase auth state change listener
+      if (auth) {
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+            updateUserInterface(user);
+          } else {
+            // User not logged in - you might want to redirect to login
+            console.log("User not authenticated");
+            // For demo purposes, create a mock user
+            updateUserInterface({
+              fullname: "Joe Demo",
+              email: "joe@demo.com",
+            });
+          }
+        });
+      }
+
+      // Restaurant selection function
+      function selectRestaurant(restaurantId) {
+        try {
+          // In a real app, you'd navigate to the restaurant menu page
+          // For demo purposes, we'll show an alert
+          const restaurantNames = {
+            "zenzeles-kitchen": "Zenzele's Kitchen",
+            "grilled-by-joe": "Grilled by Joe",
+            "emasofoni-pub": "Emasofoni Pub",
+            "kwamamkhize-culture": "KwaMamkhize Culture",
+            "mam-betty-chesanyama": "Mam Betty ChesaNyama",
+            "bbq-brothers": "The BBQ Brothers",
+          };
+
+          const restaurantName = restaurantNames[restaurantId];
+
+          if (restaurantName) {
+            // Here you would typically navigate to the restaurant menu
+            // For demo purposes, we'll show confirmation
+            if (confirm(`Navigate to ${restaurantName} menu?`)) {
+              // Simulate navigation
+             window.location.href = "menu1.html";
+              console.log(`Navigating to ${restaurantName} menu...`);
+            }
+          } else {
+            showError("Restaurant not found");
+          }
+        } catch (error) {
+          console.error("Error selecting restaurant:", error);
+          showError("Unable to select restaurant");
+        }
+      }
+
+      // Scroll to restaurants section
+      function scrollToRestaurants() {
+        document.getElementById("restaurants-section").scrollIntoView({
+          behavior: "smooth",
+        });
+      }
+
+      // Initialize the application
+      document.addEventListener("DOMContentLoaded", function () {
+        try {
+          // Get user's location
+          getCurrentLocation();
+
+          // Add some interactive animations
+          const restaurantCards = document.querySelectorAll(".restaurant-card");
+          restaurantCards.forEach((card) => {
+            card.addEventListener("mouseenter", function () {
+              this.style.transform = "translateY(-5px) scale(1.02)";
+            });
+
+            card.addEventListener("mouseleave", function () {
+              this.style.transform = "translateY(0) scale(1)";
+            });
+          });
+
+          // Add click animations to buttons
+          const buttons = document.querySelectorAll("button");
+          buttons.forEach((button) => {
+            button.addEventListener("click", function () {
+              this.style.transform = "scale(0.95)";
+              setTimeout(() => {
+                this.style.transform = "scale(1)";
+              }, 150);
+            });
+          });
+        } catch (error) {
+          console.error("Initialization error:", error);
+          showError("Application initialization failed");
+        }
+      });
+
+      // Handle network errors
+      window.addEventListener("online", function () {
+        console.log("Connection restored");
+      });
+
+      window.addEventListener("offline", function () {
+        showError("No internet connection");
+      });
+    </script>
+  </body>
+</html>

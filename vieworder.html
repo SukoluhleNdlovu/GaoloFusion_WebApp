@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GaoloFusion - Order Your Favourite Meal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            background-color: #FFD700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: #8B4513;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .brand-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .deliver-to {
+            display: flex;
+            align-items: center;
+            background-color: #FFF9C4;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .profile-pic {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+            background-color: #ffffff;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .page-subtitle {
+            font-size: 18px;
+            color: #888;
+            font-weight: normal;
+            margin-bottom: 15px;
+        }
+
+        .ingredients {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .meal-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .meal-img {
+            width: 100%;
+            height: 200px;
+            border-radius: 15px;
+            object-fit: cover;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .meal-info {
+            position: absolute;
+            bottom: -10px;
+            right: 20px;
+            background-color: #FFD700;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .meal-name {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .meal-time {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .requirements {
+            background-color: #FFF9C4;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+
+        .requirements h3 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .requirements textarea {
+            width: calc(100% - 20px);
+            border: none;
+            background: white;
+            height: 80px;
+            resize: none;
+            font-size: 14px;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+        }
+
+        .requirements textarea:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+
+        .bottom-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0;
+            padding: 0 10px;
+        }
+
+        .total-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .total-label {
+            font-size: 18px;
+            color: #888;
+        }
+
+        .total-price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .quantity-btn {
+            width: 35px;
+            height: 35px;
+            background-color: #FFD700;
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+        .quantity-btn:hover {
+            background-color: #FFC700;
+        }
+
+        .quantity-btn:active {
+            transform: scale(0.95);
+        }
+
+        .quantity {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .back-button {
+            background-color: #FF8C00;
+            border: none;
+            padding: 12px 25px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            color: white;
+            margin-top: 20px;
+            transition: background-color 0.2s;
+        }
+
+        .back-button:hover {
+            background-color: #FF7700;
+        }
+
+        .back-button:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-section">
+            <div class="logo">🍔</div>
+            <div class="brand-name">GaoloFusion</div>
+        </div>
+        <div class="deliver-to">
+            <span><strong>Deliver to:</strong> 📍 112 Westbury Rd, Johannesburg</span>
+        </div>
+        <div class="profile-pic">👤</div>
+    </header>
+
+    <div class="container">
+        <div class="page-title">Order your</div>
+        <div class="page-subtitle">Favourite Meal</div>
+        
+        <div class="ingredients">Ingredients: Chips, russian, egg, atchaar, polony, cheese</div>
+
+        <div class="meal-container">
+            <div class="meal-img">
+                <img src="\images\kotas-menu\_kota.jpg" alt="Meal Image" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div class="meal-info">
+                <div class="meal-name">Solo Kota</div>
+                <div class="meal-time">10 - 15 mins</div>
+            </div>
+        </div>
+
+        <div class="requirements">
+            <h3>Additional Requirements</h3>
+            <textarea placeholder="Enter any special instructions or modifications here..."></textarea>
+        </div>
+
+        <div class="bottom-section">
+            <div class="total-section">
+                <span class="total-label">Total Order:</span>
+                <span class="total-price" id="total-price">R 26.00</span>
+            </div>
+            
+            <div class="quantity-control">
+                <button class="quantity-btn" id="decrease">-</button>
+                <span class="quantity" id="quantity">0</span>
+                <button class="quantity-btn" id="increase">+</button>
+            </div>
+        </div>
+
+        <button class="back-button" onclick="navigateToViewMenu()">Complete Order</button>
+    </div>
+
+    <script>
+        const pricePerItem = 26;
+        let quantity = 0;
+        const quantitySpan = document.getElementById('quantity');
+        const totalPriceSpan = document.getElementById('total-price');
+
+        document.getElementById('increase').addEventListener('click', () => {
+            quantity++;
+            updateDisplay();
+        });
+
+        document.getElementById('decrease').addEventListener('click', () => {
+            if (quantity > 0) {
+                quantity--;
+                updateDisplay();
+            }
+        });
+
+        function updateDisplay() {
+            quantitySpan.textContent = quantity;
+            totalPriceSpan.textContent = `R ${(quantity * pricePerItem).toFixed(2)}`;
+        }
+
+        function navigateToMenu() {
+            // Replace with your actual menu page URL
+            window.location.href = 'updateOrder.html';
+            // Or use history.back() if you want to go back to previous page
+            // history.back();
+        }
+
+        function navigateToViewMenu() {
+            // Replace with your actual menu page URL
+            window.location.href = 'updateOrder.html';
+            // Or use history.back() if you want to go back to previous page
+            // history.back();
+        }
+
+        // You can also add navigation for other potential buttons/links
+        function navigateToCheckout() {
+            if (quantity > 0) {
+                window.location.href = 'checkout.html';
+            } else {
+                alert('Please select at least one item to proceed to checkout.');
+            }
+        }
+
+        // Optional: Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '+' || e.key === '=') {
+                document.getElementById('increase').click();
+            } else if (e.key === '-') {
+                document.getElementById('decrease').click();
+            }
+        });
+    </script>
+</body>
+</html>

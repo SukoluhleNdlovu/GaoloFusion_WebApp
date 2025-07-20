@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GaoloFusion</title>
+    <link rel="stylesheet" href="\css\menu1.css" />
+    <link rel="icon" type="image/png" href="\images\favicon-32x32.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    
+    <!-- Firebase SDK v9 (modular) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.7.1/firebase-storage-compat.js"></script>
+    
+    <style>
+        /* Additional styles for the dynamic content */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .error {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #c62828;
+        }
+        
+        .admin-panel {
+            background: #f5f5f5;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .admin-form {
+            display: grid;
+            gap: 15px;
+            max-width: 500px;
+        }
+        
+        .admin-form input, .admin-form textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .image-upload-container {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        
+        .image-upload-container:hover {
+            border-color: #ff6b35;
+        }
+        
+        .image-upload-container.dragover {
+            border-color: #ff6b35;
+            background-color: #fff5f0;
+        }
+        
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 10px;
+            margin: 10px 0;
+            object-fit: cover;
+        }
+        
+        .upload-progress {
+            width: 100%;
+            height: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .upload-progress-bar {
+            height: 100%;
+            background: linear-gradient(45deg, #ff6b35, #ff8a50);
+            width: 0%;
+            transition: width 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-image: linear-gradient(
+                -45deg,
+                rgba(255, 255, 255, .2) 25%,
+                transparent 25%,
+                transparent 50%,
+                rgba(255, 255, 255, .2) 50%,
+                rgba(255, 255, 255, .2) 75%,
+                transparent 75%,
+                transparent
+            );
+            background-size: 50px 50px;
+            animation: move 2s linear infinite;
+        }
+        
+        @keyframes move {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+        
+        .admin-form button {
+            background: #ff6b35;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        
+        .admin-form button:hover {
+            background: #e55a2b;
+        }
+        
+        .admin-form button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .quantity-btn {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .quantity-display {
+            background: #f0f0f0;
+            padding: 5px 15px;
+            border-radius: 15px;
+            min-width: 40px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .add-to-cart {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .add-to-cart:hover {
+            background: #45a049;
+        }
+        
+        .cart-summary {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #333;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        /* Basic styles for food grid and cards */
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .food-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .food-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .food-image {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .rating {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+
+        .food-info {
+            padding: 15px;
+        }
+
+        .food-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .food-price {
+            color: #ff6b35;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .food-description {
+            color: #666;
+            font-size: 12px;
+            margin: 5px 0;
+        }
+
+        .categories {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            background: #f8f8f8;
+        }
+
+        .category {
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .category:hover {
+            transform: scale(1.05);
+        }
+
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 10px;
+        }
+
+        .category-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .category-text {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .header {
+            background: #ff6b35;
+            color: white;
+            padding: 15px 20px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .location-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #28a745;
+        }
+
+        .firebase-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 1000;
+        }
+
+        .firebase-connected {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .firebase-disconnected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <img src="\images\logo.png" alt="Logo" class="logo-circle pulse-on-hover" />
+                <div class="logo-text">GaoloFusion</div>
+            </div>
+            <div class="location-info">
+                <i class="fas fa-map-marker-alt"></i>
+                <div class="location-text">
+                    <div style="font-weight: bold">Deliver to:</div>
+                    <div id="location-display">
+                        <i class="fas fa-spinner fa-spin"></i> Getting location...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Firebase Status Indicator -->
+    <div id="firebaseStatus" class="firebase-status firebase-disconnected">
+        <i class="fas fa-circle" style="font-size: 8px; margin-right: 5px;"></i>
+        Firebase: Connecting...
+    </div>
+
+    <div class="categories">
+        <div class="category">
+            <div class="category-icon">
+                <img src="\images\kotas-menu\kota-icon.jpg" alt="Kotas" class="category-image">
+            </div>
+            <div class="category-text">Kotas</div>
+        </div>
+        <div class="category">
+            <div class="category-icon">
+                <img src="\images\dagwood-menu\dag--1.jpg" alt="Dagwood" class="category-image">
+            </div>
+            <div class="category-text">Dagwood</div>
+        </div>
+        <div class="category">
+            <div class="category-icon">
+                <img src="\images\chips\chips_icon.jpg" alt="Chips" class="category-image">
+            </div>
+            <div class="category-text">Chips</div>
+        </div>
+        <div class="category">
+            <div class="category-icon">
+                <img src="\images\drinks\drinks-icon.jpg" alt="Drinks" class="category-image">
+            </div>
+            <div class="category-text">Drinks</div>
+        </div>
+    </div>
+
+    <!-- Admin Panel for Adding Items -->
+    <div class="admin-panel">
+        <h3>🍔 Admin Panel - Add Menu Item</h3>
+        <div id="adminStatus"></div>
+        <div class="admin-form">
+            <input type="text" id="itemName" placeholder="Item Name (e.g., Roll Back- with chips, polony, russian, cheese)" required>
+            
+            <!-- Image Upload Section -->
+            <div class="image-upload-container" id="imageUploadContainer" onclick="document.getElementById('imageInput').click()">
+                <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleImageSelection(event)">
+                <div id="uploadContent">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: #ccc; margin-bottom: 10px;"></i>
+                    <p>Click to upload image or drag & drop</p>
+                    <p style="font-size: 12px; color: #666;">Supports JPG, PNG, WebP (Max 5MB)</p>
+                </div>
+                <img id="imagePreview" class="image-preview" style="display: none;">
+            </div>
+            
+            <!-- Upload Progress -->
+            <div class="upload-progress" id="uploadProgress">
+                <div class="upload-progress-bar" id="uploadProgressBar"></div>
+            </div>
+            <div id="uploadStatus" style="text-align: center; margin: 10px 0; font-weight: bold;"></div>
+            
+            <input type="number" id="itemPrice" placeholder="Price (e.g., 40)" step="0.01" required>
+            <select id="itemCategory" required>
+                <option value="">Select Category</option>
+                <option value="Kotas">Kotas</option>
+                <option value="Dagwood">Dagwood</option>
+                <option value="Chips">Chips</option>
+                <option value="Drinks">Drinks</option>
+             
+            </select>
+            <input type="number" id="itemRating" placeholder="Rating (1-5)" min="1" max="5" step="0.1" required>
+            <textarea id="itemDescription" placeholder="Description (optional)" rows="3"></textarea>
+            <button id="addItemBtn" onclick="addMenuItem()">
+                <i class="fas fa-plus"></i> Add Menu Item
+            </button>
+        </div>
+    </div>
+
+    <!-- Dynamic Menu Items Container -->
+    <div id="menuContainer">
+        <div class="loading">
+            <i class="fas fa-spinner fa-spin"></i> Loading menu items...
+        </div>
+    </div>
+
+    <!-- Cart Summary -->
+    <div id="cartSummary" class="cart-summary">
+        <div>Cart: <span id="cartCount">0</span> items</div>
+        <div>Total: R <span id="cartTotal">0.00</span></div>
+    </div>
+
+    <script>
+        // Firebase Configuration - Replace with your actual Firebase config
+        const firebaseConfig = {
+        apiKey: "AIzaSyAO1-Cbk_KyssmOZ5t9YZPc-jmv3BS4YTE",
+        authDomain: "gaolofusion-webapp-c94db.firebaseapp.com",
+        projectId: "gaolofusion-webapp-c94db",
+        storageBucket: "gaolofusion-webapp-c94db.firebasestorage.app",
+        messagingSenderId: "962119071623",
+        appId: "1:962119071623:web:6c942e0be7b59ca2cb8522",
+        measurementId: "G-DPQNDCPBNK",
+      };
+
+        // Global variables
+        let app, db, storage;
+        let isFirebaseReady = false;
+        let selectedImageFile = null;
+        let cart = [];
+
+        // Initialize Firebase
+        function initializeFirebase() {
+            try {
+                // Initialize Firebase
+                app = firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                storage = firebase.storage();
+                
+                console.log('Firebase initialized successfully');
+                
+                // Test connection with better error handling
+                testFirebaseConnection();
+                
+            } catch (error) {
+                console.error('Firebase initialization failed:', error);
+                updateFirebaseStatus(false, 'Init failed: ' + error.message);
+                handleFirebaseError(error);
+            }
+        }
+
+        // Test Firebase connection
+        function testFirebaseConnection() {
+            console.log('Testing Firebase connection...');
+            
+            // Test Firestore connection
+            db.collection('test').limit(1).get()
+                .then((snapshot) => {
+                    console.log('Firestore connection successful');
+                    
+                    // Test Storage connection
+                    return storage.ref().listAll();
+                })
+                .then(() => {
+                    console.log('Firebase Storage connection successful');
+                    isFirebaseReady = true;
+                    updateFirebaseStatus(true, 'Connected');
+                    loadMenuItems();
+                })
+                .catch((error) => {
+                    console.error('Firebase connection test failed:', error);
+                    updateFirebaseStatus(false, 'Connection failed: ' + error.code);
+                    
+                    // Show specific error messages
+                    if (error.code === 'permission-denied') {
+                        showAdminError('Firebase Security Rules: Please ensure Firestore and Storage rules allow read/write access.');
+                    } else if (error.code === 'not-found') {
+                        showAdminError('Firebase project not found. Please check your project ID in the config.');
+                    } else {
+                        handleFirebaseError(error);
+                    }
+                });
+        }
+
+        // Update Firebase status indicator
+        function updateFirebaseStatus(connected, message) {
+            const statusEl = document.getElementById('firebaseStatus');
+            if (connected) {
+                statusEl.className = 'firebase-status firebase-connected';
+                statusEl.innerHTML = '<i class="fas fa-circle" style="font-size: 8px; margin-right: 5px;"></i>Firebase: ' + message;
+            } else {
+                statusEl.className = 'firebase-status firebase-disconnected';
+                statusEl.innerHTML = '<i class="fas fa-circle" style="font-size: 8px; margin-right: 5px;"></i>Firebase: ' + message;
+            }
+        }
+
+        // Show admin error
+        function showAdminError(message) {
+            const adminStatus = document.getElementById('adminStatus');
+            adminStatus.innerHTML = `
+                <div class="error">
+                    <strong>Configuration Error:</strong> ${message}
+                </div>
+            `;
+        }
+
+        // Handle Firebase errors and show fallback content
+        function handleFirebaseError(error) {
+            console.error('Firebase Error Details:', error);
+            const menuContainer = document.getElementById('menuContainer');
+            
+            let errorMessage = error.message;
+            let fixSteps = `
+                <ol style="text-align: left; margin: 10px 20px;">
+                    <li>Go to <a href="https://console.firebase.google.com" target="_blank">Firebase Console</a></li>
+                    <li>Create a new project or select existing one</li>
+                    <li>Enable Firestore Database (Start in test mode for now)</li>
+                    <li>Enable Firebase Storage</li>
+                    <li>Get your config from Project Settings → General → Your apps</li>
+                    <li>Replace the config in the code with your actual config</li>
+                    <li>Update Firestore Security Rules to allow read/write</li>
+                </ol>
+            `;
+
+            if (error.code === 'app/invalid-api-key' || errorMessage.includes('API key')) {
+                errorMessage = 'Invalid API Key - Please update your Firebase configuration';
+            } else if (error.code === 'app/project-not-found') {
+                errorMessage = 'Project not found - Please check your project ID';
+            }
+
+            menuContainer.innerHTML = `
+                <div class="error">
+                    <h3>Firebase Configuration Required</h3>
+                    <p><strong>Error:</strong> ${errorMessage}</p>
+                    <p><strong>Steps to fix:</strong></p>
+                    ${fixSteps}
+                    <button onclick="showDemoData()" style="margin-top: 10px; padding: 10px 20px; background: #ff6b35; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Show Demo Data Instead
+                    </button>
+                    <button onclick="retryFirebaseConnection()" style="margin: 10px; padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Retry Connection
+                    </button>
+                </div>
+            `;
+        }
+
+        // Retry Firebase connection
+        function retryFirebaseConnection() {
+            updateFirebaseStatus(false, 'Retrying...');
+            const menuContainer = document.getElementById('menuContainer');
+            menuContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Retrying Firebase connection...</div>';
+            
+            setTimeout(() => {
+                testFirebaseConnection();
+            }, 2000);
+        }
+
+        // Load menu items from Firestore with better error handling
+        function loadMenuItems() {
+            if (!isFirebaseReady) {
+                console.log('Firebase not ready yet...');
+                return;
+            }
+            
+            console.log('Loading menu items from Firestore...');
+            const menuContainer = document.getElementById('menuContainer');
+            
+            // Show loading state
+            menuContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading menu items...</div>';
+            
+            // Listen for real-time updates
+            const unsubscribe = db.collection('menuItems')
+                .where('status', '==', 'active') // Only load active items
+                .orderBy('createdAt', 'desc') // Show newest first
+                .onSnapshot(
+                    (snapshot) => {
+                        try {
+                            console.log(`Received ${snapshot.size} menu items from Firestore`);
+                            
+                            if (snapshot.empty) {
+                                menuContainer.innerHTML = `
+                                    <div class="loading">
+                                        <p>No menu items found in Firestore.</p>
+                                        <p>Use the admin panel above to add items, or</p>
+                                        <button onclick="insertSampleData()" style="margin: 10px; padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                            Insert Sample Data
+                                        </button>
+                                        <button onclick="showDemoData()" style="margin: 10px; padding: 10px 20px; background: #ff6b35; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                            Show Demo Data
+                                        </button>
+                                    </div>
+                                `;
+                                return;
+                            }
+                            
+                            // Create the food grid
+                            menuContainer.innerHTML = '<div class="food-grid"></div>';
+                            const foodGrid = menuContainer.querySelector('.food-grid');
+                            
+                            let itemsLoaded = 0;
+                            
+                            snapshot.forEach((doc) => {
+                                const item = doc.data();
+                                const itemId = doc.id;
+                                
+                                console.log('Loading item:', item.name, 'ID:', itemId);
+                                
+                                const foodCard = createFoodCard(item, itemId);
+                                foodGrid.appendChild(foodCard);
+                                itemsLoaded++;
+                            });
+                            
+                            console.log(`Successfully loaded ${itemsLoaded} menu items`);
+                            
+                        } catch (error) {
+                            console.error('Error processing menu items:', error);
+                            menuContainer.innerHTML = `
+                                <div class="error">
+                                    Error loading menu items: ${error.message}
+                                    <button onclick="showDemoData()" style="margin-top: 10px; padding: 10px 20px; background: #ff6b35; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                        Show Demo Data
+                                    </button>
+                                </div>
+                            `;
+                        }
+                    }, 
+                    (error) => {
+                        console.error('Firestore snapshot error:', error);
+                        updateFirebaseStatus(false, 'Snapshot error: ' + error.code);
+                        menuContainer.innerHTML = `
+                            <div class="error">
+                                Error connecting to Firestore: ${error.message}
+                                <br>
+                                <button onclick="retryFirebaseConnection()" style="margin-top: 10px; padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                    Retry Connection
+                                </button>
+                            </div>
+                        `;
+                    }
+                );
+        }
+
+        // Create a food card element
+        function createFoodCard(item, itemId, isDemo = false) {
+            const card = document.createElement('div');
+            card.className = 'food-card';
+            
+            // Use the stored image URL or fall back to local images for demo
+            const imageUrl = item.imageUrl || `\\images\\${item.image || 'placeholder.jpg'}`;
+            
+            card.innerHTML = `
+                <div class="food-image" style="background-image: url('${imageUrl}'); background-size: cover; background-position: center; height: 200px; position: relative;">
+                    <div class="rating">⭐ ${item.rating || 4.0}</div>
+                    ${!isDemo ? `<div style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 3px 8px; border-radius: 10px; font-size: 10px;">ID: ${itemId.substring(0, 6)}</div>` : ''}
+                </div>
+                <div class="food-info">
+                    <div class="food-title">${item.name}</div>
+                    <div class="food-price">R ${parseFloat(item.price || 0).toFixed(2)}</div>
+                    ${item.description ? `<div class="food-description">${item.description}</div>` : ''}
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" onclick="changeQuantity('${itemId}', -1, ${isDemo})">-</button>
+                        <div class="quantity-display" id="qty-${itemId}">0</div>
+                        <button class="quantity-btn" onclick="changeQuantity('${itemId}', 1, ${isDemo})">+</button>
+                    </div>
+                    <button class="add-to-cart" onclick="addToCart('${itemId}', '${item.name}', ${item.price || 0})">
+                        Add to Cart
+                    </button>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Image handling functions
+        function handleImageSelection(event) {
+            const file = event.target.files[0];
+            if (file) {
+                validateAndPreviewImage(file);
+            }
+        }
+
+        function validateAndPreviewImage(file) {
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                alert('Please select a valid image file (JPG, PNG, WebP)');
+                return;
+            }
+
+            // Validate file size (5MB limit)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Image size should be less than 5MB');
+                return;
+            }
+
+            selectedImageFile = file;
+            console.log('Image selected:', file.name, 'Size:', (file.size / 1024 / 1024).toFixed(2) + 'MB');
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('imagePreview');
+                const uploadContent = document.getElementById('uploadContent');
+                
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                uploadContent.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Drag and drop functionality
+        function setupDragAndDrop() {
+            const container = document.getElementById('imageUploadContainer');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                container.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                container.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                container.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight(e) {
+                container.classList.add('dragover');
+            }
+
+            function unhighlight(e) {
+                container.classList.remove('dragover');
+            }
+
+            container.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+
+                if (files.length > 0) {
+                    validateAndPreviewImage(files[0]);
+                }
+            }
+        }
+
+        // Upload image to Firebase Storage
+        async function uploadImageToStorage(file) {
+            if (!storage) {
+                throw new Error('Firebase Storage not initialized');
+            }
+
+            console.log('Starting image upload:', file.name);
+            
+            const timestamp = Date.now();
+            const cleanFileName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
+            const fileName = `menu-images/${timestamp}_${cleanFileName}`;
+            const storageRef = storage.ref().child(fileName);
+
+            // Show progress
+            const progressContainer = document.getElementById('uploadProgress');
+            const progressBar = document.getElementById('uploadProgressBar');
+            const statusDiv = document.getElementById('uploadStatus');
+            
+            progressContainer.style.display = 'block';
+            statusDiv.textContent = 'Uploading image...';
+            statusDiv.style.color = '#ff6b35';
+
+            return new Promise((resolve, reject) => {
+                const uploadTask = storageRef.put(file, {
+                    contentType: file.type,
+                    customMetadata: {
+                        uploadedAt: new Date().toISOString(),

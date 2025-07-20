@@ -1,317 +1,328 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GaoloFusion - Login</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="signin.css">
-    <link rel="icon" type="image/png" href="\images\favicon-32x32.png">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="\css\signin.css" />
+    <link rel="icon" type="image/png" href="\images\favicon-32x32.png" />
+  </head>
+  <body>
     <!-- Header -->
     <div class="header">
-        <div class="logo-section">
-             <img src="\images\logo.png" alt="Logo" class="logo-circle pulse-on-hover">
-            <div class="brand-name">GaoloFusion</div>
-        </div>
-        <button class="signup-btn" onclick="redirectToSignup()">SignUp</button>
+      <div class="logo">
+        <img
+          src="\images\logo.png"
+          alt="Logo"
+          class="logo-circle pulse-on-hover"
+        />
+        <div class="logo-text">GaoloFusion</div>
+      </div>
+      <button class="signup-btn" onclick="goToHome()">SignIn</button>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
-        <div class="login-container">
-            <h2 class="login-title">Login Account</h2>
-            
-            <div id="errorMessage" class="error-message"></div>
-            <div id="successMessage" class="success-message"></div>
-            
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                
-                <button type="submit" class="login-btn" id="loginBtn">
-                    <div class="loading" id="loading"></div>
-                    <span id="btnText">Login</span>
-                </button>
-            </form>
-            
-            <div class="divider">
-                <span>Or continue with</span>
-            </div>
-            
-            <div class="social-buttons">
-                <button class="social-btn google-btn" onclick="loginWithGoogle()">
-                    <i class="fab fa-google"></i>
-                </button>
-                <button class="social-btn facebook-btn" onclick="loginWithFacebook()">
-                    <i class="fab fa-facebook-f"></i>
-                </button>
-                <button class="social-btn twitter-btn" onclick="loginWithTwitter()">
-                    <i class="fab fa-twitter"></i>
-                </button>
-            </div>
-            
-            <div class="forgot-password">
-                <a href="#" onclick="forgotPassword()">Forgot Password?</a>
-            </div>
+      <div class="login-container">
+        <h2 class="login-title">Login Account</h2>
+
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required />
+          </div>
+
+          <button type="submit" class="login-btn" id="loginBtn">
+            <div class="loading" id="loading"></div>
+            <span id="btnText">Login</span>
+          </button>
+          <div class="forgot-password">
+            <a href="#" onclick="forgotPassword()">Forgot Password?</a>
+          </div>
+        </form>
+
+        <div class="divider">
+          <span>Or continue with</span>
         </div>
+
+        <div class="social-buttons">
+          <button class="social-btn google-btn" onclick="loginWithGoogle()" title="Sign in with Google" aria-label="Sign in with Google">
+            <i class="fab fa-google" aria-hidden="true"></i>
+            <span class="sr-only">Sign in with Google</span>
+          </button>
+          <button class="social-btn facebook-btn" onclick="loginWithFacebook()" title="Sign in with Facebook" aria-label="Sign in with Facebook">
+            <i class="fab fa-facebook-f" aria-hidden="true"></i>
+            <span class="sr-only">Sign in with Facebook</span>
+          </button>
+          <button class="social-btn twitter-btn" onclick="loginWithTwitter()" title="Sign in with Twitter" aria-label="Sign in with Twitter">
+            <i class="fab fa-twitter" aria-hidden="true"></i>
+            <span class="sr-only">Sign in with Twitter</span>
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    
+
     <script>
-        // Firebase Configuration
-       const firebaseConfig = {
-  apiKey: "AIzaSyAO1-Cbk_KyssmOZ5t9YZPc-jmv3BS4YTE",
-  authDomain: "gaolofusion-webapp-c94db.firebaseapp.com",
-  projectId: "gaolofusion-webapp-c94db",
-  storageBucket: "gaolofusion-webapp-c94db.firebasestorage.app",
-  messagingSenderId: "962119071623",
-  appId: "1:962119071623:web:6c942e0be7b59ca2cb8522",
-  measurementId: "G-DPQNDCPBNK"
-};
+      // Firebase Configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyAO1-Cbk_KyssmOZ5t9YZPc-jmv3BS4YTE",
+        authDomain: "gaolofusion-webapp-c94db.firebaseapp.com",
+        projectId: "gaolofusion-webapp-c94db",
+        storageBucket: "gaolofusion-webapp-c94db.firebasestorage.app",
+        messagingSenderId: "962119071623",
+        appId: "1:962119071623:web:6c942e0be7b59ca2cb8522",
+        measurementId: "G-DPQNDCPBNK",
+      };
 
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
+      // DOM Elements
+      const loginForm = document.getElementById("loginForm");
+      const loginBtn = document.getElementById("loginBtn");
+      const loading = document.getElementById("loading");
+      const btnText = document.getElementById("btnText");
+      const errorMessage = document.getElementById("errorMessage");
+      const successMessage = document.getElementById("successMessage");
 
-        // DOM Elements
-        const loginForm = document.getElementById('loginForm');
-        const loginBtn = document.getElementById('loginBtn');
-        const loading = document.getElementById('loading');
-        const btnText = document.getElementById('btnText');
-        const errorMessage = document.getElementById('errorMessage');
-        const successMessage = document.getElementById('successMessage');
+      // Show/Hide Messages
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = "block";
+        successMessage.style.display = "none";
+        setTimeout(() => {
+          errorMessage.style.display = "none";
+        }, 5000);
+      }
 
-        // Show/Hide Messages
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.style.display = 'block';
-            successMessage.style.display = 'none';
-            setTimeout(() => {
-                errorMessage.style.display = 'none';
-            }, 5000);
+      function showSuccess(message) {
+        successMessage.textContent = message;
+        successMessage.style.display = "block";
+        errorMessage.style.display = "none";
+        setTimeout(() => {
+          successMessage.style.display = "none";
+        }, 3000);
+      }
+
+      // Show/Hide Loading
+      function showLoading() {
+        loading.style.display = "inline-block";
+        btnText.textContent = "Logging in...";
+        loginBtn.disabled = true;
+      }
+
+      function hideLoading() {
+        loading.style.display = "none";
+        btnText.textContent = "Login";
+        loginBtn.disabled = false;
+      }
+
+      // Email/Password Login
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        // Basic validation
+        if (!email || !password) {
+          showError("Please fill in all fields");
+          return;
         }
 
-        function showSuccess(message) {
-            successMessage.textContent = message;
-            successMessage.style.display = 'block';
-            errorMessage.style.display = 'none';
-            setTimeout(() => {
-                successMessage.style.display = 'none';
-            }, 3000);
+        if (!isValidEmail(email)) {
+          showError("Please enter a valid email address");
+          return;
         }
 
-        // Show/Hide Loading
-        function showLoading() {
-            loading.style.display = 'inline-block';
-            btnText.textContent = 'Logging in...';
-            loginBtn.disabled = true;
+        if (password.length < 6) {
+          showError("Password must be at least 6 characters long");
+          return;
         }
 
-        function hideLoading() {
-            loading.style.display = 'none';
-            btnText.textContent = 'Login';
-            loginBtn.disabled = false;
+        showLoading();
+
+        try {
+          const userCredential = await auth.signInWithEmailAndPassword(
+            email,
+            password
+          );
+          const user = userCredential.user;
+
+          showSuccess("Login successful! Redirecting...");
+
+          // Redirect to dashboard or home page
+          setTimeout(() => {
+            window.location.href = "/dashboard.html"; // Change this to your desired redirect page
+          }, 1500);
+        } catch (error) {
+          hideLoading();
+          handleAuthError(error);
+        }
+      });
+
+      // Google Login
+      async function loginWithGoogle() {
+        const provider = new firebase.auth.GoogleAuthProvider();
+
+        try {
+          const result = await auth.signInWithPopup(provider);
+          const user = result.user;
+
+          showSuccess("Google login successful! Redirecting...");
+
+          setTimeout(() => {
+            window.location.href = "/dashboard.html";
+          }, 1500);
+        } catch (error) {
+          handleAuthError(error);
+        }
+      }
+
+      // Facebook Login
+      async function loginWithFacebook() {
+        const provider = new firebase.auth.FacebookAuthProvider();
+
+        try {
+          const result = await auth.signInWithPopup(provider);
+          const user = result.user;
+
+          showSuccess("Facebook login successful! Redirecting...");
+
+          setTimeout(() => {
+            window.location.href = "/dashboard.html";
+          }, 1500);
+        } catch (error) {
+          handleAuthError(error);
+        }
+      }
+
+      // Twitter Login
+      async function loginWithTwitter() {
+        const provider = new firebase.auth.TwitterAuthProvider();
+
+        try {
+          const result = await auth.signInWithPopup(provider);
+          const user = result.user;
+
+          showSuccess("Twitter login successful! Redirecting...");
+
+          setTimeout(() => {
+            window.location.href = "/dashboard.html";
+          }, 1500);
+        } catch (error) {
+          handleAuthError(error);
+        }
+      }
+
+      // Forgot Password
+      async function forgotPassword() {
+        const email = document.getElementById("email").value;
+
+        if (!email) {
+          showError("Please enter your email address first");
+          return;
         }
 
-        // Email/Password Login
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            // Basic validation
-            if (!email || !password) {
-                showError('Please fill in all fields');
-                return;
-            }
-
-            if (!isValidEmail(email)) {
-                showError('Please enter a valid email address');
-                return;
-            }
-
-            if (password.length < 6) {
-                showError('Password must be at least 6 characters long');
-                return;
-            }
-
-            showLoading();
-
-            try {
-                const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                const user = userCredential.user;
-                
-                showSuccess('Login successful! Redirecting...');
-                
-                // Redirect to dashboard or home page
-                setTimeout(() => {
-                    window.location.href = '/dashboard.html'; // Change this to your desired redirect page
-                }, 1500);
-                
-            } catch (error) {
-                hideLoading();
-                handleAuthError(error);
-            }
-        });
-
-        // Google Login
-        async function loginWithGoogle() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            
-            try {
-                const result = await auth.signInWithPopup(provider);
-                const user = result.user;
-                
-                showSuccess('Google login successful! Redirecting...');
-                
-                setTimeout(() => {
-                    window.location.href = '/dashboard.html';
-                }, 1500);
-                
-            } catch (error) {
-                handleAuthError(error);
-            }
+        if (!isValidEmail(email)) {
+          showError("Please enter a valid email address");
+          return;
         }
 
-        // Facebook Login
-        async function loginWithFacebook() {
-            const provider = new firebase.auth.FacebookAuthProvider();
-            
-            try {
-                const result = await auth.signInWithPopup(provider);
-                const user = result.user;
-                
-                showSuccess('Facebook login successful! Redirecting...');
-                
-                setTimeout(() => {
-                    window.location.href = '/dashboard.html';
-                }, 1500);
-                
-            } catch (error) {
-                handleAuthError(error);
-            }
+        try {
+          await auth.sendPasswordResetEmail(email);
+          showSuccess("Password reset email sent! Check your inbox.");
+        } catch (error) {
+          handleAuthError(error);
+        }
+      }
+
+      // Redirect to Signup
+      function redirectToSignup() {
+        window.location.href = "/signup.html"; // Change this to your signup page
+      }
+
+      // Email validation
+      function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+      }
+
+      // Handle Firebase Auth Errors
+      function handleAuthError(error) {
+        let errorMessage = "An error occurred. Please try again.";
+
+        switch (error.code) {
+          case "auth/user-not-found":
+            errorMessage = "No account found with this email address.";
+            break;
+          case "auth/wrong-password":
+            errorMessage = "Incorrect password. Please try again.";
+            break;
+          case "auth/invalid-email":
+            errorMessage = "Please enter a valid email address.";
+            break;
+          case "auth/user-disabled":
+            errorMessage = "This account has been disabled.";
+            break;
+          case "auth/too-many-requests":
+            errorMessage = "Too many failed attempts. Please try again later.";
+            break;
+          case "auth/network-request-failed":
+            errorMessage = "Network error. Please check your connection.";
+            break;
+          case "auth/popup-closed-by-user":
+            errorMessage = "Login was cancelled. Please try again.";
+            break;
+          case "auth/cancelled-popup-request":
+            errorMessage = "Login was cancelled.";
+            break;
+          default:
+            errorMessage = error.message || "An unexpected error occurred.";
         }
 
-        // Twitter Login
-        async function loginWithTwitter() {
-            const provider = new firebase.auth.TwitterAuthProvider();
-            
-            try {
-                const result = await auth.signInWithPopup(provider);
-                const user = result.user;
-                
-                showSuccess('Twitter login successful! Redirecting...');
-                
-                setTimeout(() => {
-                    window.location.href = '/dashboard.html';
-                }, 1500);
-                
-            } catch (error) {
-                handleAuthError(error);
-            }
+        showError(errorMessage);
+      }
+
+      // Auth State Observer
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          // User is signed in
+          console.log("User is signed in:", user);
+          // You can redirect to dashboard here if needed
+        } else {
+          // User is signed out
+          console.log("User is signed out");
         }
+      });
 
-        // Forgot Password
-        async function forgotPassword() {
-            const email = document.getElementById('email').value;
-            
-            if (!email) {
-                showError('Please enter your email address first');
-                return;
-            }
-
-            if (!isValidEmail(email)) {
-                showError('Please enter a valid email address');
-                return;
-            }
-
-            try {
-                await auth.sendPasswordResetEmail(email);
-                showSuccess('Password reset email sent! Check your inbox.');
-            } catch (error) {
-                handleAuthError(error);
-            }
+      // Prevent form submission on Enter key for social login buttons
+      document.addEventListener("keypress", (e) => {
+        if (
+          e.key === "Enter" &&
+          e.target.type !== "email" &&
+          e.target.type !== "password"
+        ) {
+          e.preventDefault();
         }
-
-        // Redirect to Signup
-        function redirectToSignup() {
-            window.location.href = '/signup.html'; // Change this to your signup page
-        }
-
-        // Email validation
-        function isValidEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
-        }
-
-        // Handle Firebase Auth Errors
-        function handleAuthError(error) {
-            let errorMessage = 'An error occurred. Please try again.';
-            
-            switch (error.code) {
-                case 'auth/user-not-found':
-                    errorMessage = 'No account found with this email address.';
-                    break;
-                case 'auth/wrong-password':
-                    errorMessage = 'Incorrect password. Please try again.';
-                    break;
-                case 'auth/invalid-email':
-                    errorMessage = 'Please enter a valid email address.';
-                    break;
-                case 'auth/user-disabled':
-                    errorMessage = 'This account has been disabled.';
-                    break;
-                case 'auth/too-many-requests':
-                    errorMessage = 'Too many failed attempts. Please try again later.';
-                    break;
-                case 'auth/network-request-failed':
-                    errorMessage = 'Network error. Please check your connection.';
-                    break;
-                case 'auth/popup-closed-by-user':
-                    errorMessage = 'Login was cancelled. Please try again.';
-                    break;
-                case 'auth/cancelled-popup-request':
-                    errorMessage = 'Login was cancelled.';
-                    break;
-                default:
-                    errorMessage = error.message || 'An unexpected error occurred.';
-            }
-            
-            showError(errorMessage);
-        }
-
-        // Auth State Observer
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                // User is signed in
-                console.log('User is signed in:', user);
-                // You can redirect to dashboard here if needed
-            } else {
-                // User is signed out
-                console.log('User is signed out');
-            }
-        });
-
-        // Prevent form submission on Enter key for social login buttons
-        document.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && e.target.type !== 'email' && e.target.type !== 'password') {
-                e.preventDefault();
-            }
-        });
+      });
     </script>
-</body>
+  </body>
 </html>
