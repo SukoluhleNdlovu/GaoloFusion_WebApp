@@ -38,11 +38,11 @@ It’s not just a food website — it’s a digital celebration of African flavo
 
 | Layer       | Tools/Technologies |
 |-------------|--------------------|
-| **Frontend**  | HTML, CSS, JavaScript (or React/Vue) |
-| **Backend**   | Node.js / Firebase Functions |
-| **Database**  | Firestore / MongoDB |
-| **Payments**  | Stripe or Paystack (card-only integration) |
-| **Chatbot**   | Dialogflow with Webhook (AI-powered) |
+| **Frontend**  | HTML, CSS, JavaScript  |
+| **Backend**   | Firebase Functions |
+| **Database**  | Firestore  |
+| **Payments**  | Paystack (card-only integration) |
+| **Chatbot**   | Dialogflow  |
 | **Design**    | Figma |
 
 ---
