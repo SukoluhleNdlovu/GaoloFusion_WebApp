@@ -126,11 +126,8 @@
 </head>
 <body>
     <header>
-        <img src="logo.png" alt="Logo">
-        <div class="deliver-to">
-            <span>📍</span>
-            <input type="text" value="112 Westbury Rd, Johannesburg" title="Delivery Address" placeholder="Enter delivery address">
-        </div>
+        <img src="\images\logo.png" alt="Logo">
+
         <img src="profile.png" alt="Profile">
     </header>
 
@@ -139,7 +136,7 @@
         <h2>Order your</h2>
 
         <div class="order-card">
-            <img src="\images\kotas-menu\_kota.jpg.jpg" alt="Solo Kota">
+            <img src="\images\kotas-menu\_kota.jpg" alt="Solo Kota">
             <div class="order-details">
                 <h3>Solo Kota</h3>
                 <p>Ingredients: Chips, russian, egg, atchaar, polony, cheese</p>
@@ -191,5 +188,13 @@
             window.location.href = 'confirmation.html';
         }
     </script>
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+    <df-messenger
+      chat-icon="https://dialogflow.cloud.google.com/#/editAgent/gaulofusion-ddbm/"
+      intent="WELCOME"
+      chat-title="Gaulo-Fusion"
+      agent-id="ac97af4b-d9d9-44f6-bc4b-5f31b959a356"
+      language-code="en"
+    ></df-messenger>
 </body>
 </html>

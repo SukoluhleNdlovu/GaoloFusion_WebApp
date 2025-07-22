@@ -382,16 +382,62 @@
     </div>
 
     <script>
-        function goToViewPage(event) {
-          window.location.href = "vieworder.html";
-}
-        function changeQuantity(button, change) {
-            const quantityDisplay = button.parentElement.querySelector('.quantity-display');
-            let currentQuantity = parseInt(quantityDisplay.textContent);
-            currentQuantity += change;
-            if (currentQuantity < 0) currentQuantity = 0;
-            quantityDisplay.textContent = currentQuantity;
+    function changeQuantity(button, change) {
+        const quantityDisplay = button.parentElement.querySelector('.quantity-display');
+        let currentQuantity = parseInt(quantityDisplay.textContent);
+        currentQuantity += change;
+        if (currentQuantity < 0) currentQuantity = 0;
+        quantityDisplay.textContent = currentQuantity;
+    }
+
+    function goToViewPage(event, card) {
+        event.stopPropagation();
+
+        // Retrieve existing cart or initialize
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        const title = card.querySelector('.food-title').innerText.trim();
+        const priceText = card.querySelector('.food-price').innerText.trim();
+        const price = parseFloat(priceText.replace('R ', ''));
+        const quantity = parseInt(card.querySelector('.quantity-display').innerText.trim());
+        const image = card.querySelector('img').src;
+
+        if (quantity > 0) {
+            // Check if item already exists
+            const existingItem = cart.find(item => item.title === title);
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({ title, price, quantity, image });
+            }
+
+            // Save updated cart
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            // Navigate
+            window.location.href = "vieworder.html";
+        } else {
+            alert('Please select at least one quantity before adding to your order.');
         }
-    </script>
+    }
+
+    // Add buttons dynamically for all food cards
+    document.querySelectorAll('.food-card').forEach(card => {
+        const addButton = document.createElement('button');
+        addButton.textContent = 'Add to Order';
+        addButton.className = 'add-order-button';
+        addButton.style.marginTop = '10px';
+        addButton.style.padding = '8px 12px';
+        addButton.style.backgroundColor = '#FFD700';
+        addButton.style.border = 'none';
+        addButton.style.borderRadius = '6px';
+        addButton.style.cursor = 'pointer';
+        addButton.style.fontWeight = 'bold';
+
+        addButton.addEventListener('click', (event) => goToViewPage(event, card));
+        card.querySelector('.food-info').appendChild(addButton);
+    });
+</script>
+
 </body>
 </html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GaoloFusion Order Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff9c4;
+            text-align: center;
+            padding: 20px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #ffeb3b;
+        }
+        header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+        .back-button {
+            background-color: #ffc107;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        .tick {
+            font-size: 60px;
+            color: #cddc39;
+            margin: 20px 0;
+        }
+        .receipt {
+            background-color: #fff;
+            width: 300px;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: left;
+        }
+        .receipt h3 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        td, th {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            border-bottom: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://via.placeholder.com/50" alt="GaoloFusion Logo">
+        <div>Deliver to: YO Vlei Str, Jhb</div>
+        <img src="https://via.placeholder.com/50" alt="User Avatar">
+    </header>
+
+    <button class="back-button" onclick="window.location.href='dashboard.html'">Back to Menu</button>
+
+    <h1>Order placed.....</h1>
+    <div class="tick">✔️</div>
+    <p>Check the chatbot!!</p>
+
+    <div class="receipt">
+        <h3>Receipt</h3>
+        <table>
+            <tr>
+                <th>Order Number:</th>
+                <td id="order-number"></td>
+            </tr>
+            <tr>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Price</th>
+            </tr>
+            <tr>
+                <td>Solo Kota</td>
+                <td>1</td>
+                <td>R 26.00</td>
+            </tr>
+            <tr>
+                <th colspan="2">Total:</th>
+                <td>R 26.00</td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        // Generate a random order number starting with 203 and followed by 1-2 random digits
+        const randomNumber = 203 + Math.floor(Math.random() * 90 + 10).toString();
+        document.getElementById('order-number').textContent = randomNumber;
+    </script>
+</body>
+</html>

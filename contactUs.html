@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GauloBot • Chat & Menu</title>
+<meta name="description" content="GauloBot ordering assistant with integrated live chat and interactive food menu." />
+<link rel="preconnect" href="https://fonts.gstatic.com" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* GauloBot primary palette */
+    --primary-blue: #0052cc;
+    --secondary-blue: #0066ff;
+    --background-light: #f0f4ff;
+    --bot-bubble: #e6f0ff;
+    --user-bubble: #0052cc;
+    --text-dark: #222;
+    --text-light: #fff;
+ 
+    /* GaoloFusion menu palette */
+    --fusion-yellow: #ffde21;
+    --fusion-brown: #8b4513;
+    --fusion-accent: #ff6b35;
+ 
+    --radius-sm: 4px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --shadow-sm: 0 2px 6px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.15);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.25);
+  }
+ 
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--background-light);
+    color: var(--text-dark);
+    line-height: 1.4;
+    display: flex;
+    flex-direction: column;
+  }
+ 
+  /* ================= HEADER & TABS ================= */
+  .app-header {
+    width: 100%;
+    background: var(--fusion-yellow);
+    box-shadow: var(--shadow-sm);
+    padding: 0.5rem 1rem;
+  }
+  .app-header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .logo-circle {
+    width: 40px;
+    height: 40px;
+    background: var(--fusion-brown);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+    font-weight: 700;
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+  }
+  .logo-circle:hover { transform: rotate(360deg); }
+  .logo-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #020202;
+  }
+ 
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .deliver-to {
+    font-size: 0.875rem;
+    color: #333;
+  }
+  .location {
+    font-size: 0.75rem;
+    color: #666;
+  }
+  .profile-pic {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+  }
+ 
+  /* Tabs Bar */
+  .tabs-bar {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    margin-left: auto;
+    gap: 0.25rem;
+  }
+  .tab-btn {
+    appearance: none;
+    border: none;
+    background: rgba(0,0,0,0.08);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .tab-btn[aria-selected="true"] {
+    background: var(--primary-blue);
+    color: var(--text-light);
+  }
+  .tab-btn:focus-visible {
+    outline: 2px solid var(--secondary-blue);
+    outline-offset: 2px;
+  }
+ 
+  /* ================= LAYOUT WRAPPER ================= */
+  .app-main {
+    flex: 1;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "panel";
+    padding: 1rem;
+  }
+  @media (min-width: 900px) {
+    /* Optional side-by-side when wide + both active (toggle below) */
+    .app-main.split-view {
+      grid-template-columns: 420px 1fr;
+      grid-template-areas: "chat menu";
+      column-gap: 1rem;
+    }
+    .app-main.split-view #chat-panel { grid-area: chat; }
+    .app-main.split-view #menu-panel { grid-area: menu; }
+  }
+ 
+  /* Panels */
+  .panel {
+    display: none;
+    width: 100%;
+    height: 100%;
+  }
+  .panel.active { display: block; }
+ 
+  /* ================= CHATBOT SECTION ================= */
+  .chat-container {
+    width: 100%;
+    max-width: 420px; /* When in single column center it */
+    margin: 0 auto;
+    background: #fff;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 70vh; /* Responsive height */
+  }
+  .chat-header {
+    background: var(--primary-blue);
+    color: var(--text-light);
+    padding: 1rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-align: center;
+  }
+  .chat-window {
+    flex-grow: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    background: var(--background-light);
+  }
+  .message {
+    max-width: 75%;
+    margin: 0.5rem 0;
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius-lg);
+    line-height: 1.4;
+    word-wrap: break-word;
+    font-size: 0.95rem;
+  }
+  .bot-message {
+    background: var(--bot-bubble);
+    color: var(--text-dark);
+    align-self: flex-start;
+    border-bottom-left-radius: var(--radius-sm);
+  }
+  .user-message {
+    background: var(--user-bubble);
+    color: var(--text-light);
+    align-self: flex-end;
+    border-bottom-right-radius: var(--radius-sm);
+  }
+  form#chat-form {
+    display: flex;
+    border-top: 1px solid #ccc;
+  }
+  form#chat-form input[type="text"] {
+    flex-grow: 1;
+    border: none;
+    padding: 1rem;
+    font-size: 1rem;
+    outline-offset: -2px;
+  }
+  form#chat-form input[type="submit"] {
+    background: var(--secondary-blue);
+    border: none;
+    color: var(--text-light);
+    padding: 1rem 1.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  form#chat-form input[type="submit"]:hover {
+    background: #0041a8;
+  }
+ 
+  /* Chat scrollbars */
+  .chat-window::-webkit-scrollbar { width: 8px; }
+  .chat-window::-webkit-scrollbar-track { background: var(--background-light); }
+  .chat-window::-webkit-scrollbar-thumb { background: var(--primary-blue); border-radius: 4px; }
+ 
+  /* Chatbot options */
+  .options-container {
+    margin-top: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .option-btn {
+    background: var(--primary-blue);
+    color: var(--text-light);
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+  }
+  .option-btn:hover { background: var(--secondary-blue); }
+ 
+  /* ================= MENU SECTION ================= */
+  .menu-wrapper {
+    width: 100%;
+    background: transparent;
+    min-height: 70vh;
+  }
+  .menu-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .menu-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.25rem;
+  }
+  .menu-header p {
+    font-size: 1rem;
+    color: #555;
+  }
+ 
+  /* Categories row */
+  .categories {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 30px 15px;
+    background: #f8f9fa;
+    flex-wrap: wrap;
+  }
+  .category {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 15px;
+    border-radius: 15px;
+    flex-shrink: 0;
+  }
+  .category:hover {
+    transform: translateY(-8px) scale(1.05);
+    background: rgba(251, 247, 17, 0.595);
+  }
+  .category.active {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: #fff;
+    transform: scale(1.1);
+  }
+  .category-icon {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+  }
+  .category:hover .category-icon {
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+  }
+  .category-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .category-text {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+    transition: color 0.3s ease;
+  }
+  .category.active .category-text { color: #fff; }
+ 
+  /* Menu grid */
+  .menu-section { padding: 40px 15px; }
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    align-items: stretch;
+  }
+  .menu-item {
+    background: #fff;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 220px;
+  }
+  .menu-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    border-color: #667eea;
+  }
+  .item-name {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  .item-rating {
+    font-size: 0.85rem;
+    color: #ffb400;
+    margin-bottom: 0.5rem;
+  }
+  .item-desc {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 0.75rem;
+  }
+  .item-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+  .item-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .qty-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 50%;
+    background: var(--primary-blue);
+    color: var(--text-light);
+    font-weight: 700;
+    cursor: pointer;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .qty-btn:hover { background: var(--secondary-blue); }
+  .qty-display {
+    min-width: 2ch;
+    text-align: center;
+    font-weight: 600;
+  }
+ 
+  /* Cart summary */
+  .cart-summary {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-top: 2rem;
+    background: var(--primary-blue);
+    color: var(--text-light);
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 600;
+  }
+  .cart-summary button {
+    background: var(--fusion-accent);
+    border: none;
+    color: var(--text-light);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .cart-summary button:hover { opacity: 0.9; }
+ 
+  /* Visually hidden utility (for a11y) */
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="visually-hidden">Skip to main content</a>
+<header class="app-header" role="banner">
+  <div class="app-header-inner">
+    <div class="logo" aria-label="GaoloFusion home">
+      <div class="logo-circle" aria-hidden="true">G</div>
+      <span class="logo-text">GaoloFusion</span>
+    </div>
+ 
+    <nav class="tabs-bar" role="tablist" aria-label="GauloBot navigation tabs">
+      <button id="tab-chat" class="tab-btn" role="tab" aria-selected="true" aria-controls="chat-panel">Chatbot</button>
+      <button id="tab-menu" class="tab-btn" role="tab" aria-selected="false" aria-controls="menu-panel">Menu</button>
+    </nav>
+ 
+    <div class="header-right">
+      <div class="deliver-to">Deliver to:<br><span class="location" id="header-location">Getting location...</span></div>
+      <div class="profile-pic" title="Profile"></div>
+    </div>
+  </div>
+</header>
+ 
+<main id="main" class="app-main" aria-live="polite">
+  <!-- CHAT PANEL -->
+  <section id="chat-panel" class="panel active" role="tabpanel" aria-labelledby="tab-chat" tabindex="0">
+    <div class="chat-container" role="region" aria-label="GauloBot chatbot interface">
+      <div class="chat-header">GauloBot 🤖</div>
+      <div id="chat-window" class="chat-window" aria-live="polite" aria-relevant="additions"></div>
+      <form id="chat-form" aria-label="Send message form">
+        <input
+          type="text"
+          id="user-input"
+          placeholder="Type your message..."
+          autocomplete="off"
+          required
+          aria-required="true"
+          aria-label="Message input"
+        />
+        <input type="submit" value="Send" aria-label="Send message" />
+      </form>
+    </div>
+  </section>
+ 
+  <!-- MENU PANEL -->
+  <section id="menu-panel" class="panel" role="tabpanel" aria-labelledby="tab-menu" tabindex="0">
+    <div class="menu-wrapper">
+      <div class="menu-header">
+        <h1>Welcome!</h1>
+        <p>Select a category or scroll to explore all items.</p>
+      </div>
+ 
+      <!-- Categories -->
+      <div id="categories" class="categories" role="navigation" aria-label="Menu categories">
+        <!-- Built dynamically -->
+      </div>
+ 
+      <!-- Items -->
+      <div class="menu-section">
+        <div id="menu-grid" class="menu-grid" role="list">
+          <!-- Built dynamically -->
+        </div>
+      </div>
+ 
+      <!-- Cart summary -->
+      <div id="cart-summary" class="cart-summary" hidden>
+        <span><span id="cart-count">0</span> item(s) • R <span id="cart-total">0.00</span></span>
+        <button id="checkout-btn" type="button">Checkout</button>
+      </div>
+    </div>
+  </section>
+</main>
+ 
+<script>
+/*************************************************
+ * SIMPLE DATA MODEL (replace with backend / API) *
+ *************************************************/
+const MENU_DATA = {
+  categories: [
+    { id: 'kotas',     label: 'Kotas',     img: 'img/kotas.jpg' },
+    { id: 'dagwood',   label: 'Dagwood',   img: 'img/dagwood.jpg' },
+    { id: 'chips',     label: 'Chips',     img: 'img/chips.jpg' },
+    { id: 'drinks',    label: 'Drinks',    img: 'img/drinks.jpg' },
+    { id: 'bbq-ribs',  label: 'BBQ Ribs',  img: 'img/ribs.jpg' }
+  ],
+  items: [
+    // --- KOTAS ---
+    { id: 'solo-kota',      cat: 'kotas',    name: 'Solo Kota',      rating: 4.2, price: 26.00, desc: 'Chips, russian, egg, atchaar, polony, cheese, lettuce, cucumber, ham, cheese sauce, vienna' },
+    { id: 'tazz',           cat: 'kotas',    name: 'Tazz',           rating: 4.5, price: 50.00, desc: 'Toasted bread, chips, 2x russian, patty, atchaar, polony, chicken, egg, lettuce, x2 cheese, burger' },
+    { id: 'g-wagon',        cat: 'kotas',    name: 'G Wagon',        rating: 4.1, price: 45.00, desc: 'Chips, russian, egg, atchaar, polony, x2 vienna, chicken patty, cucumber, lettuce, beef patty, cheese' },
+    { id: 'one-series',     cat: 'kotas',    name: 'One Series',     rating: 4.7, price: 48.00, desc: 'Chips, russian, egg, atchaar, polony, drumstick, sausage, cheese, ham, cucumber, bacon, vienna' },
+    { id: 'after-school',   cat: 'kotas',    name: 'After School',   rating: 4.3, price: 35.00, desc: 'Chips, russian, polony, cheese, egg, patty, bacon' },
+    { id: 'shanda-pha',     cat: 'kotas',    name: 'Shanda pha',     rating: 4.4, price: 24.00, desc: 'Chips, russian, cheese, lettuce, egg, cucumber' },
+    { id: 'super-star',     cat: 'kotas',    name: 'Super Star',     rating: 4.6, price: 80.00, desc: 'XL chips, russian, egg, atchaar, polony, vienna, chicken patty, cucumber, lettuce, ham, bacon, cheese' },
+    { id: 'bonus-bhoza',    cat: 'kotas',    name: 'Bonus Bhoza',    rating: 4.6, price: 56.00, desc: 'Chips, cheese, polony, atchaar, rib burger, patty, egg, bacon, russian' },
+    { id: 'mthakathi',      cat: 'kotas',    name: 'Mthakathi',      rating: 4.5, price: 35.00, desc: 'Chips, atchaar, polony, bacon, egg, x2 cheese, russian' },
+    { id: 'phusha',         cat: 'kotas',    name: 'Phusha',         rating: 4.7, price: 45.00, desc: 'Chips, polony, atchaar, lettuce, russian, cheese, patty' },
+    { id: 'jika-joe',       cat: 'kotas',    name: 'Jika Joe',       rating: 4.8, price: 52.00, desc: 'Chips, polony, cheese, beef patty, russian, lettuce, pickle, egg, ham, x4 wings' },
+    { id: 'level-up',       cat: 'kotas',    name: 'Level Up',       rating: 4.9, price: 75.00, desc: 'Chips, lettuce, polony, egg, rib patty, russian, vienna, ham, atchaar, cucumber, x2 cheese, x2 bacon' },
+    { id: 'woza-woza',      cat: 'kotas',    name: 'Woza woza',      rating: 4.5, price: 85.00, desc: 'Chips, russian, egg, atchaar, polony, vienna, chicken patty, cucumber, lettuce, ham, bacon, x2 cheese, burger, cheese sauce, x4 wings' },
+    { id: 'last-number',    cat: 'kotas',    name: 'Last number',    rating: 4.3, price: 82.00, desc: 'XL chips, x2 russian, egg, atchaar, polony, x2 vienna, chicken patty, cucumber, lettuce, ham, bacon, x3 cheese, burger' },
+    { id: 'triple-3',       cat: 'kotas',    name: 'Triple 3',       rating: 4.4, price: 150.00, desc: '3 kotas + chips, russian, egg, atchaar, polony, vienna, chicken patty, cucumber, lettuce, ham, bacon, cheese, wings' },
+ 
+    // --- DAGWOOD --- (placeholder few items)
+    { id: 'dagwood-classic', cat: 'dagwood', name: 'Dagwood Classic', rating: 4.5, price: 40.00, desc: 'Stacked toasted sandwich with chips & mixed meats.' },
+    { id: 'dagwood-deluxe',  cat: 'dagwood', name: 'Dagwood Deluxe',  rating: 4.7, price: 55.00, desc: 'Extra meats, cheese, egg & fries.' },
+ 
+    // --- CHIPS ---
+    { id: 'chips-small',     cat: 'chips',   name: 'Small Chips',    rating: 4.2, price: 15.00, desc: 'Crispy golden chips.' },
+    { id: 'chips-large',     cat: 'chips',   name: 'Large Chips',    rating: 4.6, price: 25.00, desc: 'Shareable portion of chips.' },
+ 
+    // --- DRINKS ---
+    { id: 'soda-330',        cat: 'drinks',  name: 'Soft Drink 330ml', rating: 4.3, price: 12.00, desc: 'Assorted flavours.' },
+    { id: 'water-500',       cat: 'drinks',  name: 'Still Water 500ml', rating: 4.8, price: 10.00, desc: 'Chilled bottled water.' },
+ 
+    // --- BBQ RIBS ---
+    { id: 'rib-300',         cat: 'bbq-ribs', name: '300g BBQ Ribs',  rating: 4.6, price: 95.00, desc: 'Sticky BBQ ribs with chips.' }
+  ]
+};
+ 
+/***************************
+ * STATE & CART UTILITIES *
+ ***************************/
+let activeCategory = null; // null = show all
+const cart = {}; // { itemId: qty }
+ 
+function updateCart(itemId, delta) {
+  const current = cart[itemId] || 0;
+  const newQty = Math.max(0, current + delta);
+  if (newQty === 0) {
+    delete cart[itemId];
+  } else {
+    cart[itemId] = newQty;
+  }
+  renderCartSummary();
+  syncQtyDisplays();
+}
+ 
+function getCartTotals() {
+  let count = 0;
+  let total = 0;
+  for (const [id, qty] of Object.entries(cart)) {
+    const item = MENU_DATA.items.find(i => i.id === id);
+    if (!item) continue;
+    count += qty;
+    total += qty * item.price;
+  }
+  return { count, total };
+}
+ 
+function renderCartSummary() {
+  const { count, total } = getCartTotals();
+  const summary = document.getElementById('cart-summary');
+  const countEl = document.getElementById('cart-count');
+  const totalEl = document.getElementById('cart-total');
+  countEl.textContent = count;
+  totalEl.textContent = total.toFixed(2);
+  summary.hidden = count === 0;
+}
+ 
+function syncQtyDisplays() {
+  document.querySelectorAll('[data-qty-for]').forEach(span => {
+    const id = span.getAttribute('data-qty-for');
+    span.textContent = cart[id] || 0;
+  });
+}
+ 
+/**********************
+ * MENU RENDERING     *
+ **********************/
+function buildCategories() {
+  const wrap = document.getElementById('categories');
+  wrap.innerHTML = '';
+  MENU_DATA.categories.forEach(cat => {
+    const el = document.createElement('div');
+    el.className = 'category';
+    el.dataset.cat = cat.id;
+    el.setAttribute('role', 'button');
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('aria-pressed', 'false');
+    el.innerHTML = `
+      <div class="category-icon"><img src="${cat.img}" alt="${cat.label}" class="category-image"></div>
+      <span class="category-text">${cat.label}</span>
+    `;
+    el.addEventListener('click', () => filterCategory(cat.id));
+    el.addEventListener('keypress', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); filterCategory(cat.id); } });
+    wrap.appendChild(el);
+  });
+}
+ 
+function buildMenuItems() {
+  const grid = document.getElementById('menu-grid');
+  grid.innerHTML = '';
+  const filtered = activeCategory ? MENU_DATA.items.filter(i => i.cat === activeCategory) : MENU_DATA.items;
+  filtered.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'menu-item';
+    card.setAttribute('role', 'listitem');
+    card.innerHTML = `
+      <div>
+        <div class="item-name">${item.name}</div>
+        <div class="item-rating">⭐ ${item.rating.toFixed(1)}</div>
+        <p class="item-desc">${item.desc}</p>
+      </div>
+      <div>
+        <div class="item-price">R ${item.price.toFixed(2)}</div>
+        <div class="item-controls">
+          <button type="button" class="qty-btn" aria-label="Decrease quantity" data-minus="${item.id}">−</button>
+          <span class="qty-display" data-qty-for="${item.id}">0</span>
+          <button type="button" class="qty-btn" aria-label="Increase quantity" data-plus="${item.id}">+</button>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+  attachQtyHandlers();
+  syncQtyDisplays();
+}
+ 
+function attachQtyHandlers() {
+  document.querySelectorAll('[data-plus]').forEach(btn => {
+    btn.addEventListener('click', () => updateCart(btn.dataset.plus, +1));
+  });
+  document.querySelectorAll('[data-minus]').forEach(btn => {
+    btn.addEventListener('click', () => updateCart(btn.dataset.minus, -1));
+  });
+}
+ 
+function filterCategory(catId) {
+  activeCategory = (activeCategory === catId) ? null : catId; // toggle off if same
+  // update active states
+  document.querySelectorAll('.category').forEach(el => {
+    const isActive = el.dataset.cat === activeCategory;
+    el.classList.toggle('active', isActive);
+    el.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+  });
+  buildMenuItems();
+}
+ 
+/**********************
+ * TABS & NAVIGATION  *
+ **********************/
+const tabChat = document.getElementById('tab-chat');
+const tabMenu = document.getElementById('tab-menu');
+const chatPanel = document.getElementById('chat-panel');
+const menuPanel = document.getElementById('menu-panel');
+const appMain = document.querySelector('.app-main');
+ 
+function activateTab(tab) {
+  const isChat = tab === 'chat';
+  tabChat.setAttribute('aria-selected', isChat ? 'true' : 'false');
+  tabMenu.setAttribute('aria-selected', isChat ? 'false' : 'true');
+  chatPanel.classList.toggle('active', isChat);
+  menuPanel.classList.toggle('active', !isChat);
+  // Remove split-view when toggling single panels; user can enable via debug if needed.
+  appMain.classList.remove('split-view');
+  // Manage focus for a11y
+  (isChat ? chatPanel : menuPanel).focus();
+}
+ 
+// Optional dev convenience: hold Shift when clicking Menu to open split view side-by-side on wide screens.
+function activateSplitView() {
+  tabChat.setAttribute('aria-selected', 'true');
+  tabMenu.setAttribute('aria-selected', 'true');
+  chatPanel.classList.add('active');
+  menuPanel.classList.add('active');
+  appMain.classList.add('split-view');
+  chatPanel.focus();
+}
+ 
+// Tab event listeners
+ tabChat.addEventListener('click', e => activateTab('chat'));
+ tabMenu.addEventListener('click', e => {
+   if (e.shiftKey && window.matchMedia('(min-width: 900px)').matches) {
+     activateSplitView();
+   } else {
+     activateTab('menu');
+   }
+ });
+ 
+ tabChat.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activateTab('chat'); } });
+ tabMenu.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activateTab('menu'); } });
+ 
+/**********************
+ * CHATBOT LOGIC      *
+ **********************/
+const chatWindow = document.getElementById('chat-window');
+const chatForm = document.getElementById('chat-form');
+const userInput = document.getElementById('user-input');
+ 
+function appendBotMessage(text, options=[]) {
+  const msg = document.createElement('div');
+  msg.classList.add('message', 'bot-message');
+  msg.innerHTML = text.replace(/\n/g, '<br>');
+ 
+  if (options.length) {
+    const optionsDiv = document.createElement('div');
+    optionsDiv.classList.add('options-container');
+    options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.classList.add('option-btn');
+      btn.textContent = opt.label;
+      btn.addEventListener('click', () => {
+        appendUserMessage(opt.label);
+        handleUserInput(opt.value);
+      });
+      optionsDiv.appendChild(btn);
+    });
+    msg.appendChild(optionsDiv);
+  }
+ 
+  chatWindow.appendChild(msg);
+  chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+ 
+function appendUserMessage(text) {
+  const msg = document.createElement('div');
+  msg.classList.add('message', 'user-message');
+  msg.textContent = text;
+  chatWindow.appendChild(msg);
+  chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+ 
+function handleUserInput(text) {
+  const reply = getBotReply(text);
+  if (reply.options) {
+    appendBotMessage(reply.text, reply.options);
+  } else {
+    appendBotMessage(reply.text);
+  }
+}
+ 
+function getBotReply(input) {
+  const raw = input;
+  input = input.toLowerCase().trim();
+ 
+  // Greetings
+  if (/^(hi|hello|hey|good morning|good afternoon|good evening)$/.test(input)) {
+    return {
+      text: "Hello! How can I assist you today?\nYou can select an option below or type your message.",
+      options: [
+        { label: "1) Track Order", value: "1" },
+        { label: "2) View Order",  value: "2" },
+        { label: "3) Help Centre", value: "3" },
+        { label: "View Menu 🍽️",   value: "menu" }
+      ]
+    };
+  }
+ 
+  // Thanks
+  if (/^(thanks|thank you|thx|ty)$/.test(input)) {
+    return { text: "You're welcome! If you have more questions, just ask." };
+  }
+ 
+  // Track Order
+  if (input === '1' || input.includes('track')) {
+    return { text: "To track your order, please visit your account page or use the tracking link sent to your email." };
+  }
+ 
+  // View Order
+  if (input === '2' || input.includes('view order') || input.includes('view')) {
+    return { text: "You can view your order history in your account dashboard under 'My Orders'." };
+  }
+ 
+  // Help Centre
+  if (input === '3' || input.includes('help')) {
+    return {
+      text: "Sure! How can I assist you further? You can ask about orders, payments, or support.",
+      options: [
+        { label: "Contact Support", value: "contact" },
+        { label: "View Menu 🍽️",    value: "menu" }
+      ]
+    };
+  }
+ 
+  // Payment
+  if (input.includes('payment') || input.includes('pay')) {
+    return { text: "For payment issues, please check your billing details or contact support at support@example.com." };
+  }
+ 
+  // Cancel Order
+  if (input.includes('cancel order') || input.includes('cancel')) {
+    return { text: "To cancel an order, please visit your orders page and select the cancel option, or contact our support team." };
+  }
+ 
+  // Contact Support
+  if (input === 'contact') {
+    return { text: "You can reach our support team at support@example.com or call 1-800-123-4567." };
+  }
+ 
+  // View Menu command (switch tab instead of new window)
+  if (input === 'menu') {
+    activateTab('menu');
+    return { text: "Opening menu for you!" };
+  }
+ 
+  // Quick add (experimental): "add solo kota" or "+ solo kota"
+  const matchAdd = input.match(/^(add|\+|order)\s+(.+)/);
+  if (matchAdd) {
+    const name = matchAdd[2];
+    const item = MENU_DATA.items.find(i => i.name.toLowerCase() === name);
+    if (item) {
+      updateCart(item.id, +1);
+      return { text: `Added 1 × ${item.name} to your cart. Type 'checkout' when ready.` };
+    }
+  }
+ 
+  // Checkout keyword
+  if (input === 'checkout') {
+    activateTab('menu');
+    return { text: "Review your cart below and click Checkout when you're ready." };
+  }
+ 
+  // Fallback
+  return {
+    text: "I didn't get that. Can you say it again?\nYou can also select an option below.",
+    options: [
+      { label: "1) Track Order", value: "1" },
+      { label: "2) View Order",  value: "2" },
+      { label: "3) Help Centre", value: "3" },
+      { label: "View Menu 🍽️",   value: "menu" }
+    ]
+  };
+}
+ 
+// Initial greeting message
+handleUserInput('hello');
+ 
+// Form submit event
+chatForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const message = userInput.value.trim();
+  if (!message) return;
+  appendUserMessage(message);
+  handleUserInput(message);
+  userInput.value = '';
+  userInput.focus();
+});
+ 
+/**********************
+ * LOCATION (mock)     *
+ **********************/
+// Replace with geolocation or user account location if available
+function mockSetLocation() {
+  const headerLoc = document.getElementById('header-location');
+  headerLoc.textContent = 'Johannesburg';
+}
+mockSetLocation();
+ 
+/**********************
+ * CHECKOUT HANDLER    *
+ **********************/
+const checkoutBtn = document.getElementById('checkout-btn');
+checkoutBtn.addEventListener('click', () => {
+  const { count, total } = getCartTotals();
+  alert(`Checkout coming soon!\n\nItems: ${count}\nTotal: R ${total.toFixed(2)}`);
+});
+ 
+/**********************
+ * INIT MENU           *
+ **********************/
+buildCategories();
+buildMenuItems();
+renderCartSummary();
+ 
+</script>
+</body>
+</html>
+ 

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manage Your Account</title>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      margin-top: 10px;
+      margin-bottom: 5px;
+    }
+    .user-profile {
+      display: flex;
+      align-items: center;
+      background-color: #ffeb3b;
+      padding: 10px 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      color: black;
+      width: 90%;
+      max-width: 400px;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      cursor: pointer;
+    }
+    .user-profile:hover {
+      background-color: #fdd835;
+    }
+    #user-greeting {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background-color: #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 18px;
+      color: #333;
+    }
+    .menu-button {
+      background-color: #ffeb3b;
+      border: none;
+      border-radius: 10px;
+      padding: 15px;
+      width: 90%;
+      max-width: 400px;
+      display: flex;
+      align-items: center;
+      margin: 8px 0;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .menu-button:hover {
+      background-color: #fdd835;
+    }
+    .menu-button img {
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Manage your Account</h1>
+
+  <a href="manageProfile.html" class="user-profile" id="user-profile-link">
+    <div class="user-avatar" id="user-avatar">
+      <i class="fas fa-user"></i>
+    </div>
+  </a>
+
+  <button class="menu-button">
+    <img src="https://img.icons8.com/ios-filled/50/000000/user.png" alt="Personal Details Icon">
+    Personal Details
+  </button>
+
+  <button class="menu-button">
+    <img src="https://img.icons8.com/ios-filled/50/000000/today.png" alt="Upcoming Events Icon">
+    Upcoming Events
+  </button>
+
+  <button class="menu-button">
+    <img src="https://img.icons8.com/ios-filled/50/000000/money.png" alt="Payment Methods Icon">
+    Payment Methods
+  </button>
+
+  <button class="menu-button">
+    <img src="https://img.icons8.com/ios-filled/50/000000/settings.png" alt="Settings Icon">
+    Settings
+  </button>
+
+  <button class="menu-button">
+    <img src="https://img.icons8.com/ios-filled/50/000000/settings.png" alt="Contacts Icon">
+    <a href="contactUs.html" class="user-profile"id="user-profile-link">
+    Contact Us
+  </button>
+
+  <button class="menu-button">
+    <img src="https://img.icons8.com/ios-filled/50/000000/logout-rounded.png" alt="Logout Icon">
+    Logout
+  </button>
+
+  <script>
+    // Example user data (replace with your Firebase auth user object)
+    const user = {
+      fullname: "Joe Doe"
+    };
+
+    function updateUserInterface(user) {
+      if (user && user.displayName) {
+        const firstName = user.displayName.split(" ")[0];
+        document.getElementById("user-greeting").textContent = `Hello, ${firstName}!`;
+        document.getElementById("user-avatar").textContent = firstName.charAt(0).toUpperCase();
+      } else {
+        document.getElementById("user-greeting").textContent = "Welcome!";
+        document.getElementById("user-avatar").innerHTML = '<i class="fas fa-user"></i>';
+      }
+    }
+
+    // Call it on load
+    updateUserInterface(user);
+  </script>
+
+</body>
+</html>

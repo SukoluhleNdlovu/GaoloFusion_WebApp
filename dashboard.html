@@ -35,12 +35,15 @@
             </div>
           </div>
         </div>
-        <div class="user-profile">
+        <a
+          href="manageProfile.html"
+          class="user-profile"        
+          id="user-profile-link"
+        >
           <span id="user-greeting">Welcome!</span>
           <div class="user-avatar" id="user-avatar">
-            <i class="fas fa-user"></i>
-          </div>
-        </div>
+            <i class="fas fa-user"></i></div
+        ></a>
       </div>
     </header>
 
@@ -185,7 +188,8 @@
         storageBucket: "gaolofusion-webapp-c94db.firebasestorage.app",
         messagingSenderId: "962119071623",
         appId: "1:962119071623:web:6c942e0be7b59ca2cb8522",
-        measurementId: "G-DPQNDCPBNK",}
+        measurementId: "G-DPQNDCPBNK",
+      };
 
       // Initialize Firebase
       let app, auth;
@@ -225,7 +229,7 @@
               const { latitude, longitude } = position.coords;
               currentLocation = { latitude, longitude };
 
-              // Reverse geocoding to get address
+              // Call reverse geocoding with actual coordinates
               reverseGeocode(latitude, longitude);
             },
             (error) => {
@@ -244,7 +248,7 @@
               }
               showError(errorMessage);
               document.getElementById("location-display").innerHTML =
-                '<i class="fas fa-map-mark"></i> Johannesburg, Gauteng';
+                '<i class="fas fa-map-marker-alt"></i> Johannesburg, Gauteng';
             }
           );
         } else {
@@ -252,15 +256,35 @@
           document.getElementById("location-display").innerHTML =
             '<i class="fas fa-map-marker-alt"></i> Johannesburg, Gauteng';
         }
-      }    
-
-      // Reverse geocoding (simplified version)
-      function reverseGeocode(lat, lon) {
-        // In a real app, you'd use a proper geocoding service
-        // For demo purposes, we'll use a default location
-        document.getElementById("location-display").innerHTML =
-          '<i class="fas fa-map-marker-alt"></i> 112 Westbury Rd, Johannesburg';
       }
+
+      // Reverse geocode using OpenStreetMap Nominatim
+      function reverseGeocode(lat, lon) {
+        fetch(
+          `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            const address = data.display_name || "Location found";
+            document.getElementById(
+              "location-display"
+            ).innerHTML = `<i class="fas fa-map-marker-alt"></i> ${address}`;
+          })
+          .catch((error) => {
+            console.error("Reverse geocoding error:", error);
+            document.getElementById("location-display").innerHTML =
+              '<i class="fas fa-map-marker-alt"></i> Unable to get address';
+          });
+      }
+
+      // Optional error display
+      function showError(message) {
+        console.error(message);
+        // Show your error container if needed
+      }
+
+      // Call it on page load
+      getCurrentLocation();
 
       // Update user interface with user data
       function updateUserInterface(user) {
@@ -327,7 +351,7 @@
             // For demo purposes, we'll show confirmation
             if (confirm(`Navigate to ${restaurantName} menu?`)) {
               // Simulate navigation
-             window.location.href = "menu1.html";
+              window.location.href = "menu1.html";
               console.log(`Navigating to ${restaurantName} menu...`);
             }
           } else {
@@ -389,5 +413,13 @@
         showError("No internet connection");
       });
     </script>
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+    <df-messenger
+      chat-icon="https://dialogflow.cloud.google.com/#/editAgent/gaulofusion-ddbm/"
+      intent="WELCOME"
+      chat-title="Gaulo-Fusion"
+      agent-id="ac97af4b-d9d9-44f6-bc4b-5f31b959a356"
+      language-code="en"
+    ></df-messenger>
   </body>
 </html>
