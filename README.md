@@ -4,7 +4,7 @@
 
 ---
 
-## ✨ Why Gaulofusion?
+## Why Gaulofusion?
 
 Hungry for Skopo, kota, or a chilled local drink?  
 Tired of searching endlessly for authentic African meals?  
@@ -15,18 +15,18 @@ It’s not just a food website — it’s a digital celebration of African flavo
 
 ---
 
-## 🔥 Key Features
+## Key Features
 
-- 🛒 **Discover Local Vendors**  
+- **Discover Local Vendors**  
   Browse through verified fast food outlets, African cuisine kitchens, and drink spots.
 
-- 💳 **Secure, Card-Only Payments**  
+- **Secure, Card-Only Payments**  
   No cash. No hassle. Just smooth, modern transactions.
 
-- 🎉 **Food Events Hub**  
+- **Food Events Hub**  
   Stay in the loop with food festivals, tastings, and vendor pop-ups around you.
 
-- 🤖 **Smart Chatbot Support**  
+- **Smart Chatbot Support**  
   Your 24/7 food assistant:
   - Tracks your orders  
   - Answers questions instantly  
@@ -34,7 +34,7 @@ It’s not just a food website — it’s a digital celebration of African flavo
 
 ---
 
-## ⚙️ Powered by Modern Tech
+##  Powered by Modern Tech
 
 | Layer       | Tools/Technologies |
 |-------------|--------------------|
@@ -47,7 +47,7 @@ It’s not just a food website — it’s a digital celebration of African flavo
 
 ---
 
-## 🧭 How It Works
+## How It Works
 
 1. **Browse**: Discover nearby vendors by food type or category  
 2. **Order**: Add your favorite meals to cart  
